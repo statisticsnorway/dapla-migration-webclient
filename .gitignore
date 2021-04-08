@@ -1,0 +1,14 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.eslintcache
+.DS_Store
+/.idea
+/public/__ENV.js
