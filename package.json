@@ -1,0 +1,80 @@
+{
+  "name": "dapla-migration-webclient",
+  "version": "0.1.0",
+  "description": "A webclient interface on top of dapla-migration-project",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/statisticsnorway/dapla-migration-webclient"
+  },
+  "author": "Statistics Norway",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "axios-hooks": "^2.1.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "semantic-ui-css": "^2.4.0",
+    "semantic-ui-react": "^2.0.0",
+    "uuid": "^8.3.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && react-env --dest ./build",
+    "test": "react-scripts test",
+    "prestart": "react-env --dest ./public",
+    "coverage": "react-scripts test --coverage --watchAll=false"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "license": "Apache-2.0",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "devDependencies": {
+    "@beam-australia/react-env": "^3.0.8",
+    "@statisticsnorway/dapla-js-utilities": "^0.2.1",
+    "@testing-library/jest-dom": "^5.7.0",
+    "@testing-library/react": "^11.0.0",
+    "@testing-library/user-event": "^12.0.0"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**",
+      "!src/index.js",
+      "!src/**/index.js",
+      "!src/configurations/**",
+      "!src/enums/**",
+      "!src/__tests__/test-data/**",
+      "!src/components/file/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 75,
+        "functions": 75,
+        "lines": 75,
+        "statements": 75
+      }
+    },
+    "coverageReporters": [
+      "cobertura",
+      "lcov",
+      "text"
+    ]
+  }
+}
