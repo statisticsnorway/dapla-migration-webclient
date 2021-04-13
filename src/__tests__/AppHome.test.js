@@ -1,3 +1,5 @@
+import useAxios from 'axios-hooks'
+import userEvent from '@testing-library/user-event'
 import { render } from '@testing-library/react'
 
 import { AppHome } from '../components'
@@ -9,8 +11,10 @@ jest.mock('../components/file/ListFiles', () => () => null)
 const { language } = TEST_CONFIGURATIONS
 const apiContext = TEST_CONFIGURATIONS.apiContext(jest.fn())
 
+const refetch = jest.fn()
+
 const setup = () => {
-  const { getByText } = render(
+  const { getByText, getByTestId } = render(
     <ApiContext.Provider value={apiContext}>
       <LanguageContext.Provider value={{ language: language }}>
         <AppHome />
@@ -18,9 +22,16 @@ const setup = () => {
     </ApiContext.Provider>
   )
 
-  return { getByText }
+  return { getByText, getByTestId }
 }
 
 test('Renders correctly', () => {
-  setup()
+  useAxios.mockReturnValue([{ loading: false, error: undefined, data: {} }, refetch])
+
+  const { getByText, getByTestId } = setup()
+
+  userEvent.click(getByText("Simple view"))
+  userEvent.click(getByTestId('test-refetch'))
+
+  expect(refetch).toHaveBeenCalledTimes(1)
 })

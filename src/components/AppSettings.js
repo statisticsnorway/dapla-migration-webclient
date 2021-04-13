@@ -1,14 +1,7 @@
-import { useContext, useEffect, useState } from 'react'
 import useAxios from 'axios-hooks'
+import { useContext, useEffect, useState } from 'react'
 import { Button, Container, Divider, Form, Grid, Header, Icon, Modal, Segment } from 'semantic-ui-react'
-import {
-  ErrorMessage,
-  InfoPopup,
-  InfoText,
-  SimpleFooter,
-  SSB_COLORS,
-  SSB_STYLE
-} from '@statisticsnorway/dapla-js-utilities'
+import { ErrorMessage, InfoPopup, InfoText, SimpleFooter, SSB_STYLE } from '@statisticsnorway/dapla-js-utilities'
 
 import { ApiContext, LanguageContext } from '../context/AppContext'
 import { API } from '../configurations'
@@ -52,7 +45,7 @@ function AppSettings ({ open, setOpen }) {
   return (
     <Modal open={open} onClose={() => setOpen(false)} style={SSB_STYLE}>
       <Header size="large" style={SSB_STYLE}>
-        <Icon name="cog" style={{ color: SSB_COLORS.GREEN }} />
+        <Icon name="cog" color="teal" />
         {SETTINGS.HEADER[language]}
       </Header>
       <Modal.Content as={Segment} basic style={SSB_STYLE}>
@@ -66,7 +59,7 @@ function AppSettings ({ open, setOpen }) {
             onChange={(event, { value }) => changeSettings(value)}
             onKeyPress={({ key }) => key === 'Enter' && applySettings()}
             icon={!loading && !settingsEdited && !error ?
-              <Icon name="check" style={{ color: SSB_COLORS.GREEN }} /> : null
+              <Icon name="check" color="green" /> : null
             }
           />
         </Form>
@@ -95,8 +88,8 @@ function AppSettings ({ open, setOpen }) {
                     fitted
                     name="undo"
                     size="large"
+                    color="blue"
                     onClick={() => setDefaults()}
-                    style={{ color: SSB_COLORS.BLUE }}
                     data-testid={TEST_IDS.DEFAULT_SETTINGS_VALUES_BUTTON}
                   />
                 }
