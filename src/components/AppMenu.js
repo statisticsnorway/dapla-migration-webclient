@@ -40,9 +40,8 @@ function AppMenu ({ setSettingsOpen, context }) {
         </Menu.Item>
         <Menu.Menu position="right">
           <Menu.Item
-            style={{ color: SSB_COLORS.GREEN }}
             onClick={() => setSettingsOpen(true)}
-            icon={{ name: 'setting', size: menuIsStuck ? 'large' : 'big' }}
+            icon={{ name: 'setting', color: 'teal', size: menuIsStuck ? 'large' : 'big' }}
           />
           <Dropdown item text={`${LANGUAGE.LANGUAGE[language]} (${LANGUAGE.LANGUAGE_CHOICE[language]})`}>
             <Dropdown.Menu>

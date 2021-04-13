@@ -1,39 +1,47 @@
-import { useEffect, useState } from 'react'
-import useAxios from 'axios-hooks'
-import { Header, Icon, List, Segment } from 'semantic-ui-react'
+import { useState } from 'react'
+import { Divider, Grid, Header, Item, List } from 'semantic-ui-react'
 
-import CopyFile from './CopyFile'
-import { API } from '../../configurations'
+import FilesList from './FilesList'
+import FilesListSimple from './FilesListSimple'
+import CopyFiles from './CopyFiles'
 
-function ListFiles ({ apiUrl }) {
-  const [url] = useState(`${window.__ENV.REACT_APP_API}${API[`GET_${apiUrl}`]}`)
+function ListFiles ({ files, simpleView }) {
+  const [filesToCopy, setFilesToCopy] = useState([])
 
-  const [{ data, loading, error }, refetch] = useAxios(url, { manual: true, useCache: false })
-
-  useEffect(() => {
-    refetch()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const handleCheckbox = (includes, filename) => {
+    if (includes) {
+      setFilesToCopy(filesToCopy.filter(file => file !== filename))
+    } else {
+      setFilesToCopy(filesToCopy.concat([filename]))
+    }
+  }
 
   return (
-    <>
-      <Header size="large">
-        {`${apiUrl} filer `}
-        <Icon link name="sync alternate" loading={loading} onClick={() => refetch()} />
-      </Header>
-      <Segment basic loading={loading}>
-        {data && !loading && !error &&
-        <List>
-          {data.files.map(file =>
-            <List.Item key={file.filename}>
-              {JSON.stringify(file, null, 2)}
-              {apiUrl === 'SAS' && <CopyFile file={file} />}
-            </List.Item>
-          )}
-        </List>
+    <Grid columns="equal">
+      <Grid.Column>
+        {simpleView ?
+          <List relaxed verticalAlign="middle">
+            <FilesListSimple files={files} filesToCopy={filesToCopy} handleCheckbox={handleCheckbox} />
+          </List>
+          :
+          <Item.Group link>
+            <FilesList files={files} filesToCopy={filesToCopy} handleCheckbox={handleCheckbox} />
+          </Item.Group>
         }
-      </Segment>
-    </>
+      </Grid.Column>
+      <Grid.Column>
+        {filesToCopy.length !== 0 &&
+        <>
+          <Header size="huge" content="Files to copy" />
+          <List>
+            {filesToCopy.map(file => <List.Item key={file}>{file}</List.Item>)}
+          </List>
+          <Divider hidden />
+          <CopyFiles files={filesToCopy} />
+        </>
+        }
+      </Grid.Column>
+    </Grid>
   )
 }
 
