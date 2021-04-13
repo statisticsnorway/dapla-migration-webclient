@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Button, Divider, Form, Header, Icon } from 'semantic-ui-react'
 
 import FileInspectStatus from './FileInspectStatus'
+import SetupFileContent from './SetupFileContent'
 
 function SetupFileImport ({ file }) {
   const [ready, setReady] = useState(false)
@@ -52,6 +53,7 @@ function SetupFileImport ({ file }) {
   return (
     <>
       <Header content="Select inspect options for" subheader={file} />
+      <SetupFileContent file={file} />
       <Form size="large">
         <Form.Select
           inline
