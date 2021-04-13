@@ -1,5 +1,5 @@
 import useAxios from 'axios-hooks'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import {
   Button,
@@ -18,7 +18,6 @@ import {
 import { v4 as uuidv4 } from 'uuid'
 
 import ImportFileStatus from './ImportFileStatus'
-import { APP_STEPS } from '../../configurations'
 
 const typeOptions = [
   { key: 'String', text: 'String', value: 'String' },
@@ -99,9 +98,6 @@ function ImportFile () {
 
   return (
     <Segment basic>
-      <Link to={APP_STEPS[1].route}>
-        <Icon size="large" color="blue" name="arrow left" />
-      </Link>
       <Header size="large" content={data.files[0]} />
       <Divider hidden />
       <Grid columns="equal">
