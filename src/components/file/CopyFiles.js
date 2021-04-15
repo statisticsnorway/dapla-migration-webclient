@@ -1,13 +1,10 @@
 import useAxios from 'axios-hooks'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 import { Button, Divider, Icon } from 'semantic-ui-react'
-
-import { APP_STEPS } from '../../configurations'
+import CopyFilesStatus from './CopyFilesStatus'
 
 function CopyFiles ({ files }) {
-  const [done, setDone] = useState(false)
   const [transactionIds, setTransactionIds] = useState([])
 
   const [{ loading }, executePut] = useAxios({ method: 'PUT' }, { manual: true, useCache: false })
@@ -42,7 +39,6 @@ function CopyFiles ({ files }) {
     }
 
     setTransactionIds(transactions)
-    setDone(true)
   }
 
   return (
@@ -56,11 +52,7 @@ function CopyFiles ({ files }) {
         Copy selected to Agent
       </Button>
       <Divider hidden />
-      {done &&
-      <Link to={APP_STEPS[1].route}>
-        <Icon size="huge" color="blue" name="arrow right" />
-      </Link>
-      }
+      <CopyFilesStatus files={files.length} transactions={transactionIds.length} />
     </>
   )
 }

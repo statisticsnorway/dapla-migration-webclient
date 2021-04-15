@@ -17,7 +17,7 @@ function ListFiles ({ files, simpleView }) {
   }
 
   return (
-    <Grid columns="equal">
+    <Grid columns="equal" divided>
       <Grid.Column>
         {simpleView ?
           <List relaxed verticalAlign="middle">
@@ -32,8 +32,8 @@ function ListFiles ({ files, simpleView }) {
       <Grid.Column>
         {filesToCopy.length !== 0 &&
         <>
-          <Header size="huge" content="Files to copy" />
-          <List>
+          <Header size="large" content="Selected files ready to copy" />
+          <List bulleted>
             {filesToCopy.map(file => <List.Item key={file}>{file}</List.Item>)}
           </List>
           <Divider hidden />
