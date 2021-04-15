@@ -1,6 +1,6 @@
 import useAxios from 'axios-hooks'
 import { useEffect, useState } from 'react'
-import { Divider, Icon } from 'semantic-ui-react'
+import { Divider, Icon, Progress } from 'semantic-ui-react'
 
 function ImportFileStatus ({ id }) {
   const [ready, setReady] = useState(false)
@@ -32,14 +32,10 @@ function ImportFileStatus ({ id }) {
     // eslint-disable-next-line
   }, [])
 
-  useEffect(() => {
-    console.log(data)
-    // eslint-disable-next-line
-  }, [ready])
-
   return (
     <>
       {!ready && !error && <Icon color="blue" name="sync alternate" loading />}
+      <Progress percent={ready ? 100 : 0} progress warning={!ready} success={ready} />
       {ready && !loading && !error &&
       <>
         {`Start time: ${data.state.startTime}`}

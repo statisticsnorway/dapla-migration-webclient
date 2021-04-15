@@ -1,6 +1,6 @@
 import useAxios from 'axios-hooks'
 import { Link, useLocation } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   Button,
   Checkbox,
@@ -73,7 +73,6 @@ function ImportFile () {
     }
 
     setTransactionId(operationId)
-    console.log(importInstructions)
     executePut({ data: importInstructions, url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}` })
       .then(() => setReady(true))
   }
@@ -91,11 +90,6 @@ function ImportFile () {
       }
     }))
   }
-
-  useEffect(() => {
-    console.log(data)
-    // eslint-disable-next-line
-  }, [])
 
   return (
     <Segment basic>
