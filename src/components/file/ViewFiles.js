@@ -53,7 +53,7 @@ function ViewFiles () {
       <Grid.Row>
         <Grid.Column>
           <Segment basic loading={loading}>
-            <Header content="Select file to import" />
+            <Header content="Select file to inspect" />
             {error && <ErrorMessage error={error} language={language} />}
             <List>
               {data !== undefined && !loading && !error && data.files.map(file => {
