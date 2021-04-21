@@ -25,7 +25,6 @@ function SetupFileContent ({ file }) {
         'args': {
           'file': file,
           'lines': '2',
-          'charset': 'UTF-8'
         }
       },
       'state': {}

@@ -60,8 +60,8 @@ function SetupFileImport ({ file }) {
           compact
           value={delimiter}
           label="Delimiter"
-          disabled={loading}
           placeholder="Delimiter"
+          disabled={loading || ready}
           onChange={(e, { value }) => {
             setTransactionId('')
             setDelimiter(value)
@@ -84,8 +84,8 @@ function SetupFileImport ({ file }) {
           compact
           value={charset}
           label="Charset"
-          disabled={loading}
           placeholder="Charset"
+          disabled={loading || ready}
           onChange={(e, { value }) => {
             setTransactionId('')
             setCharset(value)
