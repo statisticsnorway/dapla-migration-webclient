@@ -7,6 +7,7 @@ import { ApiContext, LanguageContext } from '../context/AppContext'
 import { TEST_CONFIGURATIONS } from '../configurations'
 
 jest.mock('../components/file/ListFiles', () => () => null)
+jest.mock('../components/file/ScanForFiles', () => () => null)
 
 const { language } = TEST_CONFIGURATIONS
 const apiContext = TEST_CONFIGURATIONS.apiContext(jest.fn())

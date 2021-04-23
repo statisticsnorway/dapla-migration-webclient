@@ -4,6 +4,7 @@ import { Checkbox, Divider, Dropdown, Header, Icon, Segment } from 'semantic-ui-
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
 import ListFiles from './file/ListFiles'
+import ScanForFiles from './file/ScanForFiles'
 import { LanguageContext } from '../context/AppContext'
 import { API } from '../configurations'
 
@@ -28,6 +29,8 @@ function AppHome () {
 
   return (
     <>
+      <ScanForFiles />
+      <Divider hidden />
       <Dropdown
         selection
         value={agent}

@@ -8,6 +8,7 @@ import 'ace-builds/src-noconflict/theme-github'
 
 function FileContentStatus ({ file }) {
   const [ready, setReady] = useState(false)
+  const [stringValue, setStringValue] = useState('')
 
   const [{
     data,
@@ -36,17 +37,25 @@ function FileContentStatus ({ file }) {
     // eslint-disable-next-line
   }, [])
 
+  useEffect(() => {
+    if (data !== undefined) {
+      const string = data.data.map(line => atob(line)).join('\n')
+
+      setStringValue(string)
+    }
+  }, [data])
+
   return (
     <>
       {!ready && !error && <Icon color="blue" name="sync alternate" loading />}
       {ready && !loading && !error &&
       <AceEditor
-        value={data}
         fontSize={16}
         height="250px"
         theme="github"
         readOnly={true}
         mode="javascript"
+        value={stringValue}
         name="UNIQUE_ID_OF_DIV"
         editorProps={{ $blockScrolling: true }}
       />
