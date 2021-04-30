@@ -1,6 +1,6 @@
 {
   "name": "dapla-migration-webclient",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A webclient interface on top of dapla-migration-project",
   "repository": {
     "type": "git",
@@ -54,7 +54,7 @@
     "@statisticsnorway/dapla-js-utilities": "^0.2.1",
     "@testing-library/jest-dom": "^5.7.0",
     "@testing-library/react": "^11.0.0",
-    "@testing-library/user-event": "^12.0.0"
+    "@testing-library/user-event": "^13.1.8"
   },
   "jest": {
     "collectCoverageFrom": [
