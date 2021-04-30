@@ -1,6 +1,6 @@
 {
-  "short_name": "Statistics Norway Dataplatform Migration Webclient",
-  "name": "Statistics Norway Dataplatform Migration Webclient",
+  "short_name": "Statistics Norway Data Platform Migration Webclient",
+  "name": "Statistics Norway Data Platform Migration Webclient",
   "icons": [
     {
       "src": "favicon.ico",
