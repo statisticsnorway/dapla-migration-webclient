@@ -1,6 +1,6 @@
 import useAxios from 'axios-hooks'
-import { Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import {
   Button,
   Checkbox,
@@ -12,13 +12,11 @@ import {
   Icon,
   Input,
   Label,
+  Placeholder,
   Segment,
   Table
 } from 'semantic-ui-react'
-import { v4 as uuidv4 } from 'uuid'
-
-import ImportFileStatus from './ImportFileStatus'
-import { APP_STEPS } from '../../configurations'
+import FileImportStatus from './FileImportStatus'
 
 const typeOptions = [
   { key: 'String', text: 'String', value: 'String' },
@@ -28,12 +26,9 @@ const typeOptions = [
   { key: 'Long', text: 'Long', value: 'Long' }
 ]
 
-function ImportFile () {
-  let location = useLocation()
-
+function FileImport ({ data, fileData }) {
   const [ready, setReady] = useState(false)
   const [transactionId, setTransactionId] = useState('')
-  const [data] = useState(location.state.result.template)
   const [valuation, setValuation] = useState(data.metadata.valuation)
   const [columns, setColumns] = useState(data.structure.schema.columns)
   const [convertAfterImport, setConvertAfterImport] = useState(false)
@@ -60,14 +55,14 @@ function ImportFile () {
                 'columns': columns
               },
               'uri': 'inline:csv'
+            },
+            'metadata': {
+              'boundaryType': data.metadata.boundaryType,
+              'valuation': valuation
             }
           },
-          'metadata': {
-            'boundaryType': data.metadata.boundaryType,
-            'valuation': valuation
-          }
-        },
-        'convertAfterImport': convertAfterImport
+          'convertAfterImport': convertAfterImport
+        }
       },
       'state': {}
     }
@@ -93,9 +88,6 @@ function ImportFile () {
 
   return (
     <Segment basic>
-      <Link to={APP_STEPS[1].route}>
-        <Icon size="large" color="blue" name="arrow left" />
-      </Link>
       <Header size="large" content={data.files[0]} />
       <Divider hidden />
       <Grid columns="equal">
@@ -136,19 +128,19 @@ function ImportFile () {
             </Form>
           </Grid.Column>
           <Grid.Column textAlign="right">
-            <Label size="large" tag color="blue" style={{ marginRight: '1rem' }}>
+            <Label size="large" tag color="teal" style={{ marginRight: '1rem' }}>
               {data.structure.schema.charset}
             </Label>
-            <Label size="large" tag color="blue">
+            <Label size="large" tag color="teal">
               {data.structure.schema.delimiter}
             </Label>
           </Grid.Column>
         </Grid.Row>
         <Divider />
         <Grid.Row>
-          <Grid.Column>
-            <Header content="Structure" />
-            <Table celled>
+          <Grid.Column style={{ overflowX: 'auto', paddingBottom: '1rem' }}>
+            <Header size="large" content="Structure" />
+            <Table compact="very" collapsing celled>
               <Table.Header>
                 <Table.Row>
                   {data.structure.schema.columns.map((column, index) =>
@@ -156,11 +148,10 @@ function ImportFile () {
                       <Input value={columns[index].name}
                              onChange={(e, { value }) => handleSetColumns(index, value, 'name')} />
                       <Dropdown
-                        inline
                         options={typeOptions}
                         value={columns[index].type}
                         onChange={(e, { value }) => handleSetColumns(index, value, 'type')}
-                        style={{ marginLeft: '1rem' }}
+                        style={{ marginTop: '0.5rem' }}
                       />
                     </Table.HeaderCell>
                   )}
@@ -168,9 +159,27 @@ function ImportFile () {
               </Table.Header>
               <Table.Body>
                 <Table.Row>
+                  {fileData.map(data =>
+                    <Table.Cell key={data}>
+                      {data}
+                    </Table.Cell>
+                  )}
+                </Table.Row>
+                <Table.Row>
                   {data.structure.schema.columns.map(column =>
                     <Table.Cell key={column.name}>
-                      {` `}
+                      <Placeholder>
+                        {Array.from({ length: 8 }, (x, i) =>
+                          <Placeholder.Line key={i} />
+                        )}
+                      </Placeholder>
+                    </Table.Cell>
+                  )}
+                </Table.Row>
+                <Table.Row>
+                  {data.structure.schema.columns.map(column =>
+                    <Table.Cell key={`${column.name}Pseudo`}>
+                      <Checkbox label="Pseudo?" toggle />
                     </Table.Cell>
                   )}
                 </Table.Row>
@@ -180,7 +189,7 @@ function ImportFile () {
         </Grid.Row>
         <Grid.Row>
           <Grid.Column textAlign="right">
-            <Button primary onClick={() => initiateFileImport()}>
+            <Button size="large" primary onClick={() => initiateFileImport()}>
               <Icon name="cloud upload" />
               Import
             </Button>
@@ -189,7 +198,7 @@ function ImportFile () {
         {ready && !loading &&
         <Grid.Row>
           <Grid.Column>
-            <ImportFileStatus id={transactionId} />
+            <FileImportStatus transactionId={transactionId} />
           </Grid.Column>
         </Grid.Row>
         }
@@ -198,4 +207,4 @@ function ImportFile () {
   )
 }
 
-export default ImportFile
+export default FileImport

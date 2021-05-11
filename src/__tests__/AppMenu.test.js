@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { render } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { LANGUAGE } from '@statisticsnorway/dapla-js-utilities'
 
 import { AppMenu } from '../components'
@@ -12,7 +13,9 @@ const { language, otherLanguage } = TEST_CONFIGURATIONS
 const setup = () => {
   const { getByText } = render(
     <AppContextProvider>
-      <AppMenu setSettingsOpen={jest.fn()} />
+      <MemoryRouter initialEntries={['/']}>
+        <AppMenu setSettingsOpen={jest.fn()} />
+      </MemoryRouter>
     </AppContextProvider>
   )
 

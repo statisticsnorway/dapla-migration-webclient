@@ -1,7 +1,7 @@
 {
   "name": "dapla-migration-webclient",
-  "version": "0.1.1",
-  "description": "A webclient interface on top of dapla-migration-project",
+  "version": "0.1.0",
+  "description": "A webclient on top of dapla-migration-project",
   "repository": {
     "type": "git",
     "url": "https://github.com/statisticsnorway/dapla-migration-webclient"
@@ -64,7 +64,7 @@
       "!src/configurations/**",
       "!src/enums/**",
       "!src/__tests__/test-data/**",
-      "!src/components/file/**"
+      "!src/components/files/**"
     ],
     "coverageThreshold": {
       "global": {
