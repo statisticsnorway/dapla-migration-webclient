@@ -1,59 +1,46 @@
 import useAxios from 'axios-hooks'
-import { useContext, useState } from 'react'
-import { Checkbox, Divider, Dropdown, Header, Icon, Segment } from 'semantic-ui-react'
+import { useContext } from 'react'
+import { Divider, Grid, GridColumn, Icon, Segment } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
-import ListFiles from './file/ListFiles'
-import ScanForFiles from './file/ScanForFiles'
+import ListFiles from './files/copy/ListFiles'
 import { LanguageContext } from '../context/AppContext'
-import { API } from '../configurations'
-
-const agentOptions = [
-  { key: 'SAS', text: 'SAS', value: 'SAS' }
-]
 
 function AppHome () {
   const { language } = useContext(LanguageContext)
-
-  const [agent, setAgent] = useState('SAS')
-  const [simpleView, setSimpleView] = useState(false)
 
   const [{
     data,
     loading,
     error
   }, refetch] = useAxios(
-    `${window.__ENV.REACT_APP_API}${API[`GET_${agent}`]}`,
-    { useCache: false }
+    `${window.__ENV.REACT_APP_API}/sas/files?folder=/`,
+    { manual: true, useCache: false }
   )
 
   return (
     <>
-      <ScanForFiles />
-      <Divider hidden />
-      <Dropdown
-        selection
-        value={agent}
-        options={agentOptions}
-        onChange={(e, { value }) => setAgent(value)}
-      />
-      <Icon
-        link
-        size="large"
-        color="blue"
-        loading={loading}
-        name="sync alternate"
-        onClick={() => refetch()}
-        data-testid="test-refetch"
-        style={{ marginLeft: '0.5rem' }}
-      />
-      <Divider hidden />
-      <Checkbox label="Simple view" toggle checked={simpleView} onChange={() => setSimpleView(!simpleView)} />
+      <Grid columns="equal">
+        <Grid.Row>
+          <Grid.Column />
+          <GridColumn textAlign="right">
+            <Icon
+              link
+              size="large"
+              color="blue"
+              loading={loading}
+              name="sync alternate"
+              onClick={() => refetch()}
+              data-testid="test-refetch"
+              style={{ marginLeft: '0.5rem' }}
+            />
+          </GridColumn>
+        </Grid.Row>
+      </Grid>
       <Divider />
-      <Header size="large" content="Select files to copy" />
       <Segment basic loading={loading}>
         {error && <ErrorMessage error={error} language={language} />}
-        {data !== undefined && !loading && !error && <ListFiles files={data.files} simpleView={simpleView} />}
+        {data !== undefined && !loading && !error && <ListFiles files={data.files} />}
       </Segment>
     </>
   )

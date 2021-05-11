@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Dropdown, Header, Image, Menu, Sticky } from 'semantic-ui-react'
 import {
   dapla_long_rgb,
   dapla_short_rgb,
   LANGUAGE,
-  SSB_COLORS,
   ssb_logo_no_text_rgb,
   ssb_logo_rgb
 } from '@statisticsnorway/dapla-js-utilities'
@@ -24,12 +24,12 @@ function AppMenu ({ setSettingsOpen, context }) {
         size={menuIsStuck ? 'large' : 'huge'}
         style={{
           padding: menuIsStuck ? 0 : '1rem',
-          backgroundColor: SSB_COLORS.BACKGROUND,
+          backgroundColor: '#fff',
           border: '1px solid rgba(34,36,38,.15)',
           boxShadow: '0 1px 2px 0 rgba(34,36,38,.15)'
         }}
       >
-        <Menu.Item>
+        <Menu.Item as={Link} to="/">
           <Image size={menuIsStuck ? 'mini' : 'medium'} src={menuIsStuck ? ssb_logo_no_text_rgb : ssb_logo_rgb} />
         </Menu.Item>
         <Menu.Item>
@@ -41,7 +41,7 @@ function AppMenu ({ setSettingsOpen, context }) {
         <Menu.Menu position="right">
           <Menu.Item
             onClick={() => setSettingsOpen(true)}
-            icon={{ name: 'setting', color: 'teal', size: menuIsStuck ? 'large' : 'big' }}
+            icon={{ name: 'setting', color: 'blue', size: menuIsStuck ? 'large' : 'big' }}
           />
           <Dropdown item text={`${LANGUAGE.LANGUAGE[language]} (${LANGUAGE.LANGUAGE_CHOICE[language]})`}>
             <Dropdown.Menu>

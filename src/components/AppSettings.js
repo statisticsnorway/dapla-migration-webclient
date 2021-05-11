@@ -1,7 +1,7 @@
 import useAxios from 'axios-hooks'
 import { useContext, useEffect, useState } from 'react'
 import { Button, Container, Divider, Form, Grid, Header, Icon, Modal, Segment } from 'semantic-ui-react'
-import { ErrorMessage, InfoPopup, InfoText, SimpleFooter, SSB_STYLE } from '@statisticsnorway/dapla-js-utilities'
+import { ErrorMessage, InfoPopup, InfoText, SimpleFooter } from '@statisticsnorway/dapla-js-utilities'
 
 import { ApiContext, LanguageContext } from '../context/AppContext'
 import { API } from '../configurations'
@@ -43,12 +43,12 @@ function AppSettings ({ open, setOpen }) {
   }, [execute, open, settingsEdited])
 
   return (
-    <Modal open={open} onClose={() => setOpen(false)} style={SSB_STYLE}>
-      <Header size="large" style={SSB_STYLE}>
+    <Modal open={open} onClose={() => setOpen(false)}>
+      <Header size="large">
         <Icon name="cog" color="teal" />
         {SETTINGS.HEADER[language]}
       </Header>
-      <Modal.Content as={Segment} basic style={SSB_STYLE}>
+      <Modal.Content as={Segment} basic>
         <Form size="large">
           <Form.Input
             value={apiUrl}

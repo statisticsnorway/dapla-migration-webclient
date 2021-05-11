@@ -6,8 +6,7 @@ import { AppHome } from '../components'
 import { ApiContext, LanguageContext } from '../context/AppContext'
 import { TEST_CONFIGURATIONS } from '../configurations'
 
-jest.mock('../components/file/ListFiles', () => () => null)
-jest.mock('../components/file/ScanForFiles', () => () => null)
+jest.mock('../components/files/Copy/ListFiles', () => () => null)
 
 const { language } = TEST_CONFIGURATIONS
 const apiContext = TEST_CONFIGURATIONS.apiContext(jest.fn())
@@ -15,7 +14,7 @@ const apiContext = TEST_CONFIGURATIONS.apiContext(jest.fn())
 const refetch = jest.fn()
 
 const setup = () => {
-  const { getByText, getByTestId } = render(
+  const { getByTestId } = render(
     <ApiContext.Provider value={apiContext}>
       <LanguageContext.Provider value={{ language: language }}>
         <AppHome />
@@ -23,15 +22,14 @@ const setup = () => {
     </ApiContext.Provider>
   )
 
-  return { getByText, getByTestId }
+  return { getByTestId }
 }
 
 test('Renders correctly', () => {
   useAxios.mockReturnValue([{ loading: false, error: undefined, data: {} }, refetch])
 
-  const { getByText, getByTestId } = setup()
+  const { getByTestId } = setup()
 
-  userEvent.click(getByText("Simple view"))
   userEvent.click(getByTestId('test-refetch'))
 
   expect(refetch).toHaveBeenCalledTimes(1)

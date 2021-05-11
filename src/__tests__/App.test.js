@@ -7,8 +7,7 @@ import { AppContextProvider } from '../context/AppContext'
 jest.mock('../components/AppHome', () => () => null)
 jest.mock('../components/AppMenu', () => () => null)
 jest.mock('../components/AppSettings', () => () => null)
-jest.mock('../components/file/ViewFiles', () => () => null)
-jest.mock('../components/file/ImportFile', () => () => null)
+jest.mock('../components/files/inspect/FileInspect', () => () => null)
 
 const setup = () => {
   const { getByText } = render(
@@ -25,4 +24,3 @@ const setup = () => {
 test('Does not crash', () => {
   setup()
 })
-
