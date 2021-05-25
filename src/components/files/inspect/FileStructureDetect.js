@@ -6,6 +6,7 @@ import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
 import FileStructureDetectStatus from './FileStructureDetectStatus'
 import { LanguageContext } from '../../../context/AppContext'
+import { API } from '../../../configurations'
 
 function FileStructureDetect ({ file, fileData, delimiter, charset }) {
   const { language } = useContext(LanguageContext)
@@ -38,6 +39,9 @@ function FileStructureDetect ({ file, fileData, delimiter, charset }) {
       }
 
       await executePut({
+        headers: {
+          Authorization: `Bearer ${API.TOKEN}`
+        },
         data: inspectInstructions,
         url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
       })

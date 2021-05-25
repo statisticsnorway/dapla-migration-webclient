@@ -8,6 +8,54 @@ import 'ace-builds/src-noconflict/theme-github'
 
 import FileStructureDetect from './FileStructureDetect'
 
+const encodeOptions = [
+  {
+    key: 'UTF-8',
+    text: 'Unicode 8',
+    value: 'UTF-8'
+  },
+  {
+    key: 'us-ascii',
+    text: 'US-ASCII (7-bit)',
+    value: 'us-ascii'
+  },
+  {
+    key: 'ISO-8859-1',
+    text: 'Windows Latin-1',
+    value: 'ISO-8859-1'
+  }
+]
+
+const delimiterOptions = [
+  {
+    key: ';',
+    text: ';',
+    value: ';'
+  },
+  {
+    key: ',',
+    text: ',',
+    value: ','
+  },
+  {
+    key: '|',
+    text: '|',
+    value: '|'
+  }
+  ,
+  {
+    key: '§',
+    text: '§',
+    value: '§'
+  }
+  ,
+  {
+    key: '\\t',
+    text: '\\t',
+    value: '\\t'
+  }
+]
+
 function FileInspectContent ({ file }) {
   const [ready, setReady] = useState(false)
   const [fileData, setFileData] = useState('')
@@ -44,12 +92,18 @@ function FileInspectContent ({ file }) {
 
   useEffect(() => {
     if (data !== undefined) {
-      const string = data.data.map(line => atob(line)).join('\n')
-      const fileData = atob(data.data.pop()).split(delimiter)
+      console.log(data.data)
+
+      const encoder = new TextEncoder()
+      const decoder = new TextDecoder(charset)
+      const encoded = data.data.map(line => encoder.encode(atob(line)))
+      const string = encoded.map(line => decoder.decode(line)).join('\n')
+      const fileData = decoder.decode(encoded.slice(-1)[0]).split(delimiter)
+
       setFileData(fileData)
       setStringValue(string)
     }
-  }, [data, delimiter])
+  }, [charset, data, delimiter])
 
   return (
     <>
@@ -59,18 +113,11 @@ function FileInspectContent ({ file }) {
         <Form size="large">
           <Form.Select
             inline
-            compact
             value={charset}
             label="Charset"
             placeholder="Charset"
             onChange={(e, { value }) => {setCharset(value)}}
-            options={[
-              {
-                key: 'UTF-8',
-                text: 'UTF-8',
-                value: 'UTF-8'
-              }
-            ]}
+            options={encodeOptions}
           />
           <AceEditor
             fontSize={14}
@@ -87,23 +134,11 @@ function FileInspectContent ({ file }) {
           <Divider hidden />
           <Form.Select
             inline
-            compact
             value={delimiter}
             label="Delimiter"
             placeholder="Delimiter"
             onChange={(e, { value }) => {setDelimiter(value)}}
-            options={[
-              {
-                key: ';',
-                text: ';',
-                value: ';'
-              },
-              {
-                key: ',',
-                text: ',',
-                value: ','
-              }
-            ]}
+            options={delimiterOptions}
           />
         </Form>
         <Divider hidden />

@@ -7,6 +7,7 @@ import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
 import FileInspectStatus from './FileInspectStatus'
 import { LanguageContext } from '../../../context/AppContext'
+import { API } from '../../../configurations'
 
 const linesToShowOptions = Array.from({ length: 9 }, (x, i) => {
   const lines = i + 2
@@ -46,6 +47,9 @@ function FileInspect () {
       }
 
       await executePut({
+        headers: {
+          Authorization: `Bearer ${API.TOKEN}`
+        },
         data: contentInstructions,
         url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
       })

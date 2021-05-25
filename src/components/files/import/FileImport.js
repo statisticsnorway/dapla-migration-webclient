@@ -17,6 +17,7 @@ import {
   Table
 } from 'semantic-ui-react'
 import FileImportStatus from './FileImportStatus'
+import { API } from '../../../configurations'
 
 const typeOptions = [
   { key: 'String', text: 'String', value: 'String' },
@@ -68,7 +69,13 @@ function FileImport ({ data, fileData }) {
     }
 
     setTransactionId(operationId)
-    executePut({ data: importInstructions, url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}` })
+    executePut({
+      headers: {
+        Authorization: `Bearer ${API.TOKEN}`
+      },
+      data: importInstructions,
+      url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
+    })
       .then(() => setReady(true))
   }
 

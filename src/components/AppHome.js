@@ -1,20 +1,24 @@
 import useAxios from 'axios-hooks'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Divider, Grid, GridColumn, Icon, Segment } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
+import FileScan from './files/scan/FileScan'
 import ListFiles from './files/copy/ListFiles'
 import { LanguageContext } from '../context/AppContext'
 
 function AppHome () {
   const { language } = useContext(LanguageContext)
 
+  const [path, setPath] = useState('/ssb/stamme01')
+  const [ready, setReady] = useState(false)
+
   const [{
     data,
     loading,
     error
   }, refetch] = useAxios(
-    `${window.__ENV.REACT_APP_API}/sas/files?folder=/`,
+    `${window.__ENV.REACT_APP_API}/sas/files?folder=${path}`,
     { manual: true, useCache: false }
   )
 
@@ -22,15 +26,22 @@ function AppHome () {
     <>
       <Grid columns="equal">
         <Grid.Row>
-          <Grid.Column />
+          <Grid.Column>
+            <FileScan path={path} setPath={setPath} ready={ready} setReady={setReady} />
+          </Grid.Column>
           <GridColumn textAlign="right">
             <Icon
               link
               size="large"
               color="blue"
               loading={loading}
+              disabled={!ready}
               name="sync alternate"
-              onClick={() => refetch()}
+              onClick={() => {
+                if (ready) {
+                  refetch()
+                }
+              }}
               data-testid="test-refetch"
               style={{ marginLeft: '0.5rem' }}
             />

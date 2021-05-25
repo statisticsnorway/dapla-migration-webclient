@@ -1,40 +1,37 @@
 import useAxios from 'axios-hooks'
 import { useContext, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { Button, Divider } from 'semantic-ui-react'
+import { Divider, Input } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
-import FileCopyStatus from './FileCopyStatus'
+import FileScanStatus from './FileScanStatus'
 import { LanguageContext } from '../../../context/AppContext'
-import { API } from '../../../configurations'
 
-function FileCopy ({ file }) {
+function FileScan ({ path, setPath, ready, setReady }) {
   const { language } = useContext(LanguageContext)
 
   const [transactionId, setTransactionId] = useState('')
 
   const [{ error, loading }, executePut] = useAxios({ method: 'PUT' }, { manual: true, useCache: false })
 
-  const initiateFileCopy = async () => {
+  const initiateFileScan = async () => {
     try {
       const operationId = uuidv4()
-      const copyInstructions = {
+      const scanInstructions = {
         'id': operationId,
         'command': {
           'target': 'sas-agent',
-          'cmd': 'copy',
+          'cmd': 'scan',
           'args': {
-            'path': file
+            'path': path,
+            'recursive' : true
           }
         },
         'state': {}
       }
 
       await executePut({
-        headers: {
-          Authorization: `Bearer ${API.TOKEN}`
-        },
-        data: copyInstructions,
+        data: scanInstructions,
         url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
       })
 
@@ -46,24 +43,25 @@ function FileCopy ({ file }) {
 
   useEffect(() => {
     setTransactionId('')
-  }, [file])
+  }, [path])
 
   return (
     <>
-      <Button
-        primary
-        icon="copy"
-        size="large"
-        content="Copy"
-        loading={loading}
-        onClick={() => initiateFileCopy()}
-        disabled={loading || error !== null}
+      <Input
+        fluid
+        size='large'
+        value={path}
+        icon='search'
+        disabled={loading}
+        placeholder='/ssb/stamme01'
+        onChange={(e, { value}) => setPath(value)}
+        onKeyPress={({ key }) => key === 'Enter' && initiateFileScan()}
       />
-      {transactionId !== '' && <FileCopyStatus file={file} transactionId={transactionId} />}
+      {transactionId !== '' && <FileScanStatus ready={ready} setReady={setReady} transactionId={transactionId} />}
       <Divider hidden />
       {error && <ErrorMessage error={error} language={language} />}
     </>
   )
 }
 
-export default FileCopy
+export default FileScan
