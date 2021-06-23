@@ -1,12 +1,12 @@
 import useAxios from 'axios-hooks'
 import { useContext, useEffect, useState } from 'react'
-import { Divider, Icon } from 'semantic-ui-react'
+import { Icon } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
-import FileCopyComplete from './FileCopyComplete'
-import { LanguageContext } from '../../../context/AppContext'
+import HeadOfFileContent from './HeadOfFileContent'
+import { LanguageContext } from '../../../../context/AppContext'
 
-function FileCopyStatus ({ file, transactionId }) {
+function HeadOfFileStatus ({ file, transactionId }) {
   const { language } = useContext(LanguageContext)
 
   const [ready, setReady] = useState(false)
@@ -46,14 +46,12 @@ function FileCopyStatus ({ file, transactionId }) {
 
   return (
     <>
-      {!ready && !error && !statusError && <Icon color="blue" name="sync alternate" loading />}
-      {ready && !loading && !error && !statusError && <Icon color="green" name="check" />}
-      <Divider hidden />
-      <FileCopyComplete file={file} />
+      {!ready && !error && !statusError && <Icon color="blue" size="big" name="sync alternate" loading />}
+      {ready && !loading && !error && !statusError && <HeadOfFileContent file={file} />}
       {error && <ErrorMessage error={error} language={language} />}
       {statusError && <ErrorMessage error={statusError} language={language} />}
     </>
   )
 }
 
-export default FileCopyStatus
+export default HeadOfFileStatus

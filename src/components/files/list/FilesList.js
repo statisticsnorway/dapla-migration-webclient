@@ -1,11 +1,11 @@
 import { Checkbox, Header, Icon, Item, List } from 'semantic-ui-react'
 
-function FilesList ({ files, fileToCopy, handleCheckbox }) {
+function FilesList ({ files, selectedFile, handleCheckbox }) {
   return files.map(file => {
     const created = new Date(file.created)
     const modified = new Date(file.modified)
     const fullFilename = `${file.folder}/${file.filename}`
-    const checked = fileToCopy === fullFilename
+    const checked = selectedFile === fullFilename
     const fileSizeKB = file.size * 0.0009765625
     let fileSize = fileSizeKB
     let fileSizeUnit = 'kB'

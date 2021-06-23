@@ -1,4 +1,4 @@
 export const API = {
-  GET_HEALTH: '/health/ready',
-  TOKEN: ""
+  GET_HEALTH: '/greet',
+  TOKEN: ''
 }

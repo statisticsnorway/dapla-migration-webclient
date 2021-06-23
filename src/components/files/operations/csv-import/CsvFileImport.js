@@ -1,23 +1,10 @@
 import useAxios from 'axios-hooks'
 import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import {
-  Button,
-  Checkbox,
-  Divider,
-  Dropdown,
-  Form,
-  Grid,
-  Header,
-  Icon,
-  Input,
-  Label,
-  Placeholder,
-  Segment,
-  Table
-} from 'semantic-ui-react'
-import FileImportStatus from './FileImportStatus'
-import { API } from '../../../configurations'
+import { Button, Checkbox, Divider, Dropdown, Form, Grid, Header, Icon, Input, Segment, Table } from 'semantic-ui-react'
+
+import CsvFileImportStatus from './CsvFileImportStatus'
+// import { API } from '../../../../configurations'
 
 const typeOptions = [
   { key: 'String', text: 'String', value: 'String' },
@@ -27,8 +14,7 @@ const typeOptions = [
   { key: 'Long', text: 'Long', value: 'Long' }
 ]
 
-function FileImport ({ data, fileData }) {
-  const [ready, setReady] = useState(false)
+function CsvFileImport ({ file, data, fileData }) {
   const [transactionId, setTransactionId] = useState('')
   const [valuation, setValuation] = useState(data.metadata.valuation)
   const [columns, setColumns] = useState(data.structure.schema.columns)
@@ -39,44 +25,49 @@ function FileImport ({ data, fileData }) {
     { manual: true, useCache: false }
   )
 
-  const initiateFileImport = () => {
-    const operationId = uuidv4()
-    const importInstructions = {
-      'id': operationId,
-      'command': {
-        'target': 'agent',
-        'cmd': 'csv-import',
-        'args': {
-          'template': {
-            'files': data.files,
-            'structure': {
-              'schema': {
-                'delimiter': data.structure.schema.delimiter,
-                'charset': data.structure.schema.charset,
-                'columns': columns
+  const initiateFileImport = async () => {
+    try {
+      const operationId = uuidv4()
+      const importInstructions = {
+        'id': operationId,
+        'command': {
+          'target': 'agent',
+          'cmd': 'csv-import',
+          'args': {
+            'template': {
+              'files': data.files,
+              'structure': {
+                'schema': {
+                  'delimiter': data.structure.schema.delimiter,
+                  'charset': data.structure.schema.charset,
+                  'columns': columns
+                },
+                'uri': 'inline:csv'
               },
-              'uri': 'inline:csv'
+              'metadata': {
+                'boundaryType': data.metadata.boundaryType,
+                'valuation': valuation
+              }
             },
-            'metadata': {
-              'boundaryType': data.metadata.boundaryType,
-              'valuation': valuation
-            }
-          },
-          'convertAfterImport': convertAfterImport
-        }
-      },
-      'state': {}
-    }
+            'convertAfterImport': convertAfterImport
+          }
+        },
+        'state': {}
+      }
 
-    setTransactionId(operationId)
-    executePut({
-      headers: {
-        Authorization: `Bearer ${API.TOKEN}`
-      },
-      data: importInstructions,
-      url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
-    })
-      .then(() => setReady(true))
+      // TODO: handle auth header for local testing differently
+      await executePut({
+/*        headers: {
+          Authorization: `Bearer ${API.TOKEN}`
+        },*/
+        data: importInstructions,
+        url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
+      })
+
+      setTransactionId(operationId)
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   const handleSetColumns = (index, value, property) => {
@@ -95,28 +86,23 @@ function FileImport ({ data, fileData }) {
 
   return (
     <Segment basic>
-      <Header size="large" content={data.files[0]} />
-      <Divider hidden />
       <Grid columns="equal">
         <Grid.Row>
           <Grid.Column>
             <Form size="large">
               <Form.Select
                 disabled
-                value={data.metadata.boundaryType}
                 label="boundaryType"
                 placeholder="boundaryType"
-                options={[{
-                  key: 'BOUNDED',
-                  text: 'BOUNDED',
-                  value: 'BOUNDED'
-                }]}
+                value={data.metadata.boundaryType}
+                options={[{ key: 'BOUNDED', text: 'BOUNDED', value: 'BOUNDED' }]}
               >
               </Form.Select>
               <Form.Select
                 label="valuation"
                 value={valuation}
                 placeholder="valuation"
+                disabled={transactionId !== ''}
                 onChange={(e, { value }) => setValuation(value)}
                 options={['OPEN', 'INTERNAL', 'SHIELDED', 'SENSITIVE', 'UNRECOGNIZED'].map(valuation => ({
                   key: valuation,
@@ -129,19 +115,13 @@ function FileImport ({ data, fileData }) {
                 <Checkbox
                   label="Convert after import?"
                   checked={convertAfterImport}
+                  disabled={transactionId !== ''}
                   onClick={() => setConvertAfterImport(!convertAfterImport)}
                 />
               </Form.Field>
             </Form>
           </Grid.Column>
-          <Grid.Column textAlign="right">
-            <Label size="large" tag color="teal" style={{ marginRight: '1rem' }}>
-              {data.structure.schema.charset}
-            </Label>
-            <Label size="large" tag color="teal">
-              {data.structure.schema.delimiter}
-            </Label>
-          </Grid.Column>
+          <Grid.Column />
         </Grid.Row>
         <Divider />
         <Grid.Row>
@@ -152,13 +132,18 @@ function FileImport ({ data, fileData }) {
                 <Table.Row>
                   {data.structure.schema.columns.map((column, index) =>
                     <Table.HeaderCell key={column.name}>
-                      <Input value={columns[index].name}
-                             onChange={(e, { value }) => handleSetColumns(index, value, 'name')} />
+                      <Input
+                        value={columns[index].name}
+                        disabled={transactionId !== ''}
+                        onChange={(e, { value }) => handleSetColumns(index, value, 'name')}
+                      />
+                      <br />
                       <Dropdown
                         options={typeOptions}
                         value={columns[index].type}
-                        onChange={(e, { value }) => handleSetColumns(index, value, 'type')}
                         style={{ marginTop: '0.5rem' }}
+                        disabled={transactionId !== ''}
+                        onChange={(e, { value }) => handleSetColumns(index, value, 'type')}
                       />
                     </Table.HeaderCell>
                   )}
@@ -167,26 +152,15 @@ function FileImport ({ data, fileData }) {
               <Table.Body>
                 <Table.Row>
                   {fileData.map(data =>
-                    <Table.Cell key={data}>
+                    <Table.Cell key={data} disabled={transactionId !== ''}>
                       {data}
                     </Table.Cell>
                   )}
                 </Table.Row>
                 <Table.Row>
                   {data.structure.schema.columns.map(column =>
-                    <Table.Cell key={column.name}>
-                      <Placeholder>
-                        {Array.from({ length: 8 }, (x, i) =>
-                          <Placeholder.Line key={i} />
-                        )}
-                      </Placeholder>
-                    </Table.Cell>
-                  )}
-                </Table.Row>
-                <Table.Row>
-                  {data.structure.schema.columns.map(column =>
                     <Table.Cell key={`${column.name}Pseudo`}>
-                      <Checkbox label="Pseudo?" toggle />
+                      <Checkbox label="Pseudo?" toggle disabled={transactionId !== ''} />
                     </Table.Cell>
                   )}
                 </Table.Row>
@@ -196,16 +170,16 @@ function FileImport ({ data, fileData }) {
         </Grid.Row>
         <Grid.Row>
           <Grid.Column textAlign="right">
-            <Button size="large" primary onClick={() => initiateFileImport()}>
+            <Button disabled={transactionId !== ''} size="large" primary onClick={() => initiateFileImport()}>
               <Icon name="cloud upload" />
-              Import
+              Initiate import
             </Button>
           </Grid.Column>
         </Grid.Row>
-        {ready && !loading &&
+        {transactionId !== '' && !loading &&
         <Grid.Row>
           <Grid.Column>
-            <FileImportStatus transactionId={transactionId} />
+            <CsvFileImportStatus file={file} transactionId={transactionId} />
           </Grid.Column>
         </Grid.Row>
         }
@@ -214,4 +188,4 @@ function FileImport ({ data, fileData }) {
   )
 }
 
-export default FileImport
+export default CsvFileImport

@@ -6,8 +6,6 @@ import { Divider, Form, Icon } from 'semantic-ui-react'
 import 'ace-builds/src-noconflict/mode-javascript'
 import 'ace-builds/src-noconflict/theme-github'
 
-import FileStructureDetect from './FileStructureDetect'
-
 const encodeOptions = [
   {
     key: 'UTF-8',
@@ -26,41 +24,9 @@ const encodeOptions = [
   }
 ]
 
-const delimiterOptions = [
-  {
-    key: ';',
-    text: ';',
-    value: ';'
-  },
-  {
-    key: ',',
-    text: ',',
-    value: ','
-  },
-  {
-    key: '|',
-    text: '|',
-    value: '|'
-  }
-  ,
-  {
-    key: '§',
-    text: '§',
-    value: '§'
-  }
-  ,
-  {
-    key: '\\t',
-    text: '\\t',
-    value: '\\t'
-  }
-]
-
-function FileInspectContent ({ file }) {
+function HeadOfFileContent ({ file }) {
   const [ready, setReady] = useState(false)
-  const [fileData, setFileData] = useState('')
   const [charset, setCharset] = useState('UTF-8')
-  const [delimiter, setDelimiter] = useState(',')
   const [stringValue, setStringValue] = useState('')
 
   const [{
@@ -68,14 +34,14 @@ function FileInspectContent ({ file }) {
     loading,
     error
   }, refetch] = useAxios(
-    `${window.__ENV.REACT_APP_API}/agent/head?file=${file}`,
+    `${window.__ENV.REACT_APP_API}/agent/head?file=${file.folder}/${file.filename}`,
     { manual: true, useCache: false }
   )
 
   useEffect(() => {
     const interval = setInterval(() => {
       checkStatus().then()
-    }, 2000)
+    }, 5000)
 
     const checkStatus = async () => {
       await refetch().then(res => {
@@ -92,18 +58,14 @@ function FileInspectContent ({ file }) {
 
   useEffect(() => {
     if (data !== undefined) {
-      console.log(data.data)
-
       const encoder = new TextEncoder()
       const decoder = new TextDecoder(charset)
       const encoded = data.data.map(line => encoder.encode(atob(line)))
       const string = encoded.map(line => decoder.decode(line)).join('\n')
-      const fileData = decoder.decode(encoded.slice(-1)[0]).split(delimiter)
 
-      setFileData(fileData)
       setStringValue(string)
     }
-  }, [charset, data, delimiter])
+  }, [charset, data])
 
   return (
     <>
@@ -116,37 +78,27 @@ function FileInspectContent ({ file }) {
             value={charset}
             label="Charset"
             placeholder="Charset"
-            onChange={(e, { value }) => {setCharset(value)}}
             options={encodeOptions}
-          />
-          <AceEditor
-            fontSize={14}
-            width="1836px"
-            height="250px"
-            theme="github"
-            readOnly={true}
-            mode="javascript"
-            value={stringValue}
-            showPrintMargin={false}
-            name="UNIQUE_ID_OF_DIV"
-            editorProps={{ $blockScrolling: true }}
-          />
-          <Divider hidden />
-          <Form.Select
-            inline
-            value={delimiter}
-            label="Delimiter"
-            placeholder="Delimiter"
-            onChange={(e, { value }) => {setDelimiter(value)}}
-            options={delimiterOptions}
+            onChange={(e, { value }) => {setCharset(value)}}
           />
         </Form>
         <Divider hidden />
-        <FileStructureDetect file={file} fileData={fileData} charset={charset} delimiter={delimiter} />
+        <AceEditor
+          fontSize={14}
+          width="1836px"
+          height="250px"
+          theme="github"
+          readOnly={true}
+          mode="javascript"
+          value={stringValue}
+          showPrintMargin={false}
+          name="UNIQUE_ID_OF_DIV"
+          editorProps={{ $blockScrolling: true }}
+        />
       </>
       }
     </>
   )
 }
 
-export default FileInspectContent
+export default HeadOfFileContent

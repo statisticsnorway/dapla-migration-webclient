@@ -1,19 +1,19 @@
 import useAxios from 'axios-hooks'
 import { useContext, useEffect, useState } from 'react'
-import { Icon } from 'semantic-ui-react'
+import { Divider, Icon } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
-import FileInspectContent from './FileInspectContent'
+import CopyFileProgress from './CopyFileProgress'
 import { LanguageContext } from '../../../context/AppContext'
 
-function FileInspectStatus ({ file, transactionId }) {
+function CopyFileStatus ({ fileSize, transactionId }) {
   const { language } = useContext(LanguageContext)
 
   const [ready, setReady] = useState(false)
+  const [readBytes, setReadBytes] = useState(0)
   const [statusError, setStatusError] = useState(null)
 
   const [{
-    loading,
     error
   }, refetch] = useAxios(
     `${window.__ENV.REACT_APP_API}/cmd/id/${transactionId}`,
@@ -29,7 +29,13 @@ function FileInspectStatus ({ file, transactionId }) {
       await refetch().then(res => {
         if (res.data.state.status === 'completed') {
           setReady(true)
+          setReadBytes(res.data.result.status['read-bytes'])
           clearInterval(interval)
+        }
+
+        if (res.data.state.status === 'in-progress') {
+          setReady(true)
+          setReadBytes(res.data.result.status['read-bytes'])
         }
 
         if (res.data.state.status === 'error') {
@@ -46,12 +52,14 @@ function FileInspectStatus ({ file, transactionId }) {
 
   return (
     <>
-      {!ready && !error && !statusError && <Icon color="blue" size="big" name="sync alternate" loading />}
-      {ready && !loading && !error && !statusError && <FileInspectContent file={file} />}
+      {!ready && !error && !statusError && <Icon color="blue" name="sync alternate" loading />}
+      {ready && !error && !statusError && `File copy initiated ...`}
+      {ready && !statusError && <CopyFileProgress readBytes={readBytes} fileSize={fileSize} />}
+      <Divider hidden />
       {error && <ErrorMessage error={error} language={language} />}
       {statusError && <ErrorMessage error={statusError} language={language} />}
     </>
   )
 }
 
-export default FileInspectStatus
+export default CopyFileStatus

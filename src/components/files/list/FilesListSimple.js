@@ -1,12 +1,16 @@
 import { Checkbox, List } from 'semantic-ui-react'
 
-function FilesListSimple ({ files, fileToCopy, handleCheckbox }) {
+function FilesListSimple ({ files, selectedFile, handleCheckbox }) {
   return files.map(file => {
     const fullFilename = `${file.folder}/${file.filename}`
-    const checked = fileToCopy === fullFilename
+    const checked = selectedFile === fullFilename
 
     return (
-      <List.Item key={fullFilename} onClick={() => handleCheckbox(fullFilename)}>
+      <List.Item
+        key={fullFilename}
+        onClick={() => handleCheckbox(fullFilename)}
+        style={{ backgroundColor: checked ? '#00b5ad' : '#fff' }}
+      >
         {fullFilename}
         <Checkbox
           checked={checked}

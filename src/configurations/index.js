@@ -1,3 +1,3 @@
 export { API } from './API'
-export { APP_STEPS } from './APP'
+export { APP } from './APP'
 export { TEST_CONFIGURATIONS } from './TEST'

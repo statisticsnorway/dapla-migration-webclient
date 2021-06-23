@@ -4,11 +4,11 @@ import { v4 as uuidv4 } from 'uuid'
 import { Button, Divider } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
-import FileCopyStatus from './FileCopyStatus'
+import CopyFileStatus from './CopyFileStatus'
 import { LanguageContext } from '../../../context/AppContext'
-import { API } from '../../../configurations'
+// import { API } from '../../../configurations'
 
-function FileCopy ({ file }) {
+function CopyFile ({ file, fileSize }) {
   const { language } = useContext(LanguageContext)
 
   const [transactionId, setTransactionId] = useState('')
@@ -30,10 +30,11 @@ function FileCopy ({ file }) {
         'state': {}
       }
 
+      // TODO: handle auth header for local testing differently
       await executePut({
-        headers: {
+/*        headers: {
           Authorization: `Bearer ${API.TOKEN}`
-        },
+        },*/
         data: copyInstructions,
         url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
       })
@@ -52,18 +53,16 @@ function FileCopy ({ file }) {
     <>
       <Button
         primary
-        icon="copy"
         size="large"
-        content="Copy"
-        loading={loading}
+        content="Initiate copy"
         onClick={() => initiateFileCopy()}
-        disabled={loading || error !== null}
+        disabled={loading || transactionId !== ''}
       />
-      {transactionId !== '' && <FileCopyStatus file={file} transactionId={transactionId} />}
+      {transactionId !== '' && <CopyFileStatus file={file} fileSize={fileSize} transactionId={transactionId} />}
       <Divider hidden />
       {error && <ErrorMessage error={error} language={language} />}
     </>
   )
 }
 
-export default FileCopy
+export default CopyFile

@@ -2,18 +2,19 @@ import { useRef, useState } from 'react'
 import { Checkbox, Divider, Grid, Header, Input, Item, List, Ref, Sticky } from 'semantic-ui-react'
 
 import FilesList from './FilesList'
-import FilesListSimple from './FilesListSimple'
 import FileDetailed from './FileDetailed'
+import FilesListSimple from './FilesListSimple'
+import SelectFileOperation from './SelectFileOperation'
 
-function ListFiles ({ files }) {
-  const [fileToCopy, setFileToCopy] = useState('')
+function SelectFile ({ agent, files }) {
+  const [simpleView, setSimpleView] = useState(true)
+  const [selectedFile, setSelectedFile] = useState('')
   const [filterFilesBy, setFilterFilesBy] = useState('')
   const [filteredFiles, setFilteredFiles] = useState(files)
-  const [simpleView, setSimpleView] = useState(true)
 
   const appRefArea = useRef()
 
-  const handleCheckbox = filename => setFileToCopy(filename)
+  const handleCheckbox = filename => setSelectedFile(filename)
 
   const handleFilterFiles = (e, { value }) => {
     setFilterFilesBy(value)
@@ -35,15 +36,17 @@ function ListFiles ({ files }) {
         <Grid.Column>
           <Grid columns="equal">
             <Grid.Column>
-              <Header size="large" content="Select file to copy" />
+              <Header size="large" content="Select file" />
             </Grid.Column>
             <Grid.Column textAlign="right">
+              {agent === 'sas' &&
               <Checkbox
                 toggle
-                checked={simpleView}
                 label="Simple list"
+                checked={simpleView}
                 onChange={() => setSimpleView(!simpleView)}
               />
+              }
             </Grid.Column>
           </Grid>
           <Divider hidden />
@@ -51,26 +54,27 @@ function ListFiles ({ files }) {
             fluid
             size="large"
             icon="filter"
-            placeholder="Filter"
             value={filterFilesBy}
+            placeholder="Filter list"
             onChange={handleFilterFiles}
           />
           <Divider hidden />
           {simpleView ?
-            <List relaxed verticalAlign="middle">
-              <FilesListSimple files={filteredFiles} fileToCopy={fileToCopy} handleCheckbox={handleCheckbox} />
+            <List animated relaxed verticalAlign="middle">
+              <FilesListSimple files={filteredFiles} selectedFile={selectedFile} handleCheckbox={handleCheckbox} />
             </List>
             :
             <Item.Group link>
-              <FilesList files={filteredFiles} fileToCopy={fileToCopy} handleCheckbox={handleCheckbox} />
+              <FilesList files={filteredFiles} selectedFile={selectedFile} handleCheckbox={handleCheckbox} />
             </Item.Group>
           }
         </Grid.Column>
         <Grid.Column>
-          {fileToCopy !== '' &&
+          {selectedFile !== '' &&
           <Sticky context={appRefArea} offset={80}>
-            <Header size="large" content="Selected file ready to copy" />
-            <FileDetailed file={files.filter(file => `${file.folder}/${file.filename}` === fileToCopy)[0]} />
+            <Header size="large" content="Selected file" />
+            {agent === 'sas' && <FileDetailed file={files.filter(file => `${file.folder}/${file.filename}` === selectedFile)[0]} />}
+            {agent === 'agent' && <SelectFileOperation file={files.filter(file => `${file.folder}/${file.filename}` === selectedFile)[0]} />}
           </Sticky>
           }
         </Grid.Column>
@@ -79,4 +83,4 @@ function ListFiles ({ files }) {
   )
 }
 
-export default ListFiles
+export default SelectFile
