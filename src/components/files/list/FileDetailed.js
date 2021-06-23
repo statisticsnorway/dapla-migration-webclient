@@ -1,6 +1,6 @@
 import { Divider, Header, Icon, Item, List } from 'semantic-ui-react'
 
-import FileCopy from './FileCopy'
+import CopyFile from '../copy/CopyFile'
 
 function FileDetailed ({ file }) {
   const created = new Date(file.created)
@@ -33,7 +33,7 @@ function FileDetailed ({ file }) {
               <List.Item>{`Modified: ${modified.toLocaleDateString()}`}</List.Item>
             </List>
             <Divider hidden />
-            <FileCopy file={fullFilename} />
+            <CopyFile file={fullFilename} fileSize={file.size} />
           </Item.Extra>
         </Item.Content>
       </Item>

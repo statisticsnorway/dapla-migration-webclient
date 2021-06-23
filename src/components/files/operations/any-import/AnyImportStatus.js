@@ -1,18 +1,18 @@
 import useAxios from 'axios-hooks'
 import { useContext, useEffect, useState } from 'react'
-import { Divider, Icon } from 'semantic-ui-react'
+import { Divider, Icon, Progress } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
-import FileCopyComplete from './FileCopyComplete'
-import { LanguageContext } from '../../../context/AppContext'
+import { LanguageContext } from '../../../../context/AppContext'
 
-function FileCopyStatus ({ file, transactionId }) {
+function AnyImportStatus ({ file, transactionId }) {
   const { language } = useContext(LanguageContext)
 
   const [ready, setReady] = useState(false)
   const [statusError, setStatusError] = useState(null)
 
   const [{
+    data,
     loading,
     error
   }, refetch] = useAxios(
@@ -46,14 +46,33 @@ function FileCopyStatus ({ file, transactionId }) {
 
   return (
     <>
-      {!ready && !error && !statusError && <Icon color="blue" name="sync alternate" loading />}
-      {ready && !loading && !error && !statusError && <Icon color="green" name="check" />}
-      <Divider hidden />
-      <FileCopyComplete file={file} />
+      <Progress
+        total={1}
+        progress="ratio"
+        error={error || statusError}
+        value={ready ? statusError ? 0 : 1 : 0}
+        success={ready && !error && !statusError}
+        indicating={!ready && !error && !statusError}
+      />
+      {ready && !loading && !error && !statusError &&
+      <>
+        {`Start time: ${data.state.startTime}`}
+        <br />
+        {`Completed: ${data.state.timestamp}`}
+        <br />
+        {`Status: ${data.state.status} `}
+        <Icon color="green" name="check" />
+        <Divider hidden />
+        {JSON.stringify(data.result.status, null, 2)}
+        <Divider hidden />
+        File can be found in bucket
+        <b>{` gs://ssb-data-prod-kilde-ssb-onprem-copy${file.folder}/${file.filename}`}</b>
+      </>
+      }
       {error && <ErrorMessage error={error} language={language} />}
       {statusError && <ErrorMessage error={statusError} language={language} />}
     </>
   )
 }
 
-export default FileCopyStatus
+export default AnyImportStatus

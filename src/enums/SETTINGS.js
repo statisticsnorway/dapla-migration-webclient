@@ -1,7 +1,7 @@
 export const SETTINGS = {
   API: {
-    en: 'API service',
-    nb: 'API-tjeneste'
+    en: 'dapla-migration-coordinator',
+    nb: 'dapla-migration-coordinator'
   },
   APPLY: {
     en: 'Apply',

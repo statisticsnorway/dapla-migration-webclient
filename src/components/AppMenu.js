@@ -23,8 +23,8 @@ function AppMenu ({ setSettingsOpen, context }) {
         secondary
         size={menuIsStuck ? 'large' : 'huge'}
         style={{
-          padding: menuIsStuck ? 0 : '1rem',
           backgroundColor: '#fff',
+          padding: menuIsStuck ? 0 : '1rem',
           border: '1px solid rgba(34,36,38,.15)',
           boxShadow: '0 1px 2px 0 rgba(34,36,38,.15)'
         }}
@@ -41,7 +41,7 @@ function AppMenu ({ setSettingsOpen, context }) {
         <Menu.Menu position="right">
           <Menu.Item
             onClick={() => setSettingsOpen(true)}
-            icon={{ name: 'setting', color: 'blue', size: menuIsStuck ? 'large' : 'big' }}
+            icon={{ name: 'cog', color: 'blue', size: menuIsStuck ? 'large' : 'big' }}
           />
           <Dropdown item text={`${LANGUAGE.LANGUAGE[language]} (${LANGUAGE.LANGUAGE_CHOICE[language]})`}>
             <Dropdown.Menu>

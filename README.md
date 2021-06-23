@@ -1,7 +1,8 @@
 # dapla-migration-webclient
 
 This application is built for in-house use in Statistics Norway and it aims to create a user interface on top of the
-[dapla-migration-project](https://github.com/statisticsnorway/dapla-migration-project).
+[dapla-migration-project](https://github.com/statisticsnorway/dapla-migration-project) using the REST API from
+[dapla-migration-coordinator](https://github.com/statisticsnorway/dapla-migration-coordinator).
 
 ### Try this application locally
 

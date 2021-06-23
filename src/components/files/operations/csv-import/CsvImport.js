@@ -1,12 +1,12 @@
 import useAxios from 'axios-hooks'
 import { useContext, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { useLocation } from 'react-router-dom'
-import { Accordion, Divider, Form, Header, Icon } from 'semantic-ui-react'
+import { Accordion, Divider, Form, Icon } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
-import FileInspectStatus from './FileInspectStatus'
-import { LanguageContext } from '../../../context/AppContext'
+import CsvHeadOfFileStatus from './CsvHeadOfFileStatus'
+import { LanguageContext } from '../../../../context/AppContext'
+// import { API } from '../../../../configurations'
 
 const linesToShowOptions = Array.from({ length: 9 }, (x, i) => {
   const lines = i + 2
@@ -18,10 +18,8 @@ const linesToShowOptions = Array.from({ length: 9 }, (x, i) => {
   })
 })
 
-function FileInspect () {
+function CsvImport ({ file }) {
   const { language } = useContext(LanguageContext)
-
-  let location = useLocation()
 
   const [linesToShow, setLinesToShow] = useState(2)
   const [transactionId, setTransactionId] = useState('')
@@ -38,14 +36,18 @@ function FileInspect () {
           'target': 'agent',
           'cmd': 'head',
           'args': {
-            'file': location.state,
+            'file': `${file.folder}/${file.filename}`,
             'lines': linesToShow.toString()
           }
         },
         'state': {}
       }
 
+      // TODO: handle auth header for local testing differently
       await executePut({
+/*        headers: {
+          Authorization: `Bearer ${API.TOKEN}`
+        },*/
         data: contentInstructions,
         url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
       })
@@ -58,7 +60,6 @@ function FileInspect () {
 
   return (
     <>
-      <Header size="large" content="Select inspect options for" subheader={location.state} />
       <Form size="large">
         <Form.Select
           inline
@@ -86,7 +87,7 @@ function FileInspect () {
         <Accordion.Content active={accordionOpen}>
           {error && <ErrorMessage error={error} language={language} />}
           {transactionId !== '' && !loading &&
-          <FileInspectStatus file={location.state} transactionId={transactionId} />
+          <CsvHeadOfFileStatus file={file} transactionId={transactionId} />
           }
         </Accordion.Content>
       </Accordion>
@@ -94,4 +95,4 @@ function FileInspect () {
   )
 }
 
-export default FileInspect
+export default CsvImport

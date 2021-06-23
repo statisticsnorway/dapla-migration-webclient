@@ -45,7 +45,7 @@ function AppSettings ({ open, setOpen }) {
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
       <Header size="large">
-        <Icon name="cog" color="teal" />
+        <Icon name="cog" color="blue" />
         {SETTINGS.HEADER[language]}
       </Header>
       <Modal.Content as={Segment} basic>
@@ -73,10 +73,13 @@ function AppSettings ({ open, setOpen }) {
           <Divider hidden />
           <Grid columns="equal">
             <Grid.Column>
-              <Button primary size="large" disabled={loading} onClick={() => applySettings()}>
-                <Icon name="sync" style={{ paddingRight: '0.5rem' }} />
-                {SETTINGS.APPLY[language]}
-              </Button>
+              <Button
+                primary
+                size="large"
+                disabled={loading}
+                onClick={() => applySettings()}
+                content={SETTINGS.APPLY[language]}
+              />
             </Grid.Column>
             <Grid.Column textAlign="right">
               <InfoPopup

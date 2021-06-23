@@ -3,17 +3,14 @@ import { useContext, useEffect, useState } from 'react'
 import { Icon } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
-import FileImport from '../import/FileImport'
 import { LanguageContext } from '../../../context/AppContext'
 
-function FileStructureDetectStatus ({ fileData, transactionId }) {
+function ScanFilesStatus ({ transactionId, ready, setReady }) {
   const { language } = useContext(LanguageContext)
 
-  const [ready, setReady] = useState(false)
   const [statusError, setStatusError] = useState(null)
 
   const [{
-    data,
     loading,
     error
   }, refetch] = useAxios(
@@ -34,7 +31,6 @@ function FileStructureDetectStatus ({ fileData, transactionId }) {
         }
 
         if (res.data.state.status === 'error') {
-          setReady(true)
           setStatusError(res.data.state.errorCause)
           clearInterval(interval)
         }
@@ -47,12 +43,22 @@ function FileStructureDetectStatus ({ fileData, transactionId }) {
 
   return (
     <>
-      {!ready && !error && !statusError && <Icon color="blue" size="big" name="sync alternate" loading />}
-      {ready && !loading && !error && !statusError && <FileImport data={data.result.template} fileData={fileData} />}
+      {!ready && !error && !statusError &&
+      <>
+        <Icon style={{ marginRight: '1rem' }} size="large" color="blue" name="sync alternate" loading />
+        Scanning ...
+      </>
+      }
+      {ready && !loading && !error && !statusError &&
+      <>
+        <Icon style={{ marginRight: '1rem' }} size="large" color="green" name="check" />
+        Scan complete, files can now be listed below
+      </>
+      }
       {error && <ErrorMessage error={error} language={language} />}
       {statusError && <ErrorMessage error={statusError} language={language} />}
     </>
   )
 }
 
-export default FileStructureDetectStatus
+export default ScanFilesStatus

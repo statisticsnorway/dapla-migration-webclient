@@ -1,3 +1,5 @@
-export { default as AppHome } from './AppHome'
+export { default as AppCopy } from './steps/AppCopy'
+export { default as AppDoOperation } from './steps/AppDoOperation'
+export { default as AppSelectOperation } from './steps/AppSelectOperation'
 export { default as AppMenu } from './AppMenu'
 export { default as AppSettings } from './AppSettings'
