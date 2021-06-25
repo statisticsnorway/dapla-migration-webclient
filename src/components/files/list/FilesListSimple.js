@@ -9,7 +9,7 @@ function FilesListSimple ({ files, selectedFile, handleCheckbox }) {
       <List.Item
         key={fullFilename}
         onClick={() => handleCheckbox(fullFilename)}
-        style={{ backgroundColor: checked ? '#00b5ad' : '#fff' }}
+        style={{ backgroundColor: checked ? 'rgb(0, 181, 173, .1)' : '#fff' }}
       >
         {fullFilename}
         <Checkbox

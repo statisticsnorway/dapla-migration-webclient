@@ -19,6 +19,7 @@ function CsvFileImport ({ file, data, fileData }) {
   const [valuation, setValuation] = useState(data.metadata.valuation)
   const [columns, setColumns] = useState(data.structure.schema.columns)
   const [convertAfterImport, setConvertAfterImport] = useState(false)
+  const [converterSkipOnFailure, setConverterSkipOnFailure] = useState(false)
 
   const [{ loading }, executePut] = useAxios(
     { method: 'PUT' },
@@ -49,7 +50,8 @@ function CsvFileImport ({ file, data, fileData }) {
                 'valuation': valuation
               }
             },
-            'convertAfterImport': convertAfterImport
+            'convertAfterImport': convertAfterImport,
+            'converterSkipOnFailure': converterSkipOnFailure
           }
         },
         'state': {}
@@ -119,6 +121,16 @@ function CsvFileImport ({ file, data, fileData }) {
                   onClick={() => setConvertAfterImport(!convertAfterImport)}
                 />
               </Form.Field>
+              {convertAfterImport &&
+                <Form.Field>
+                  <Checkbox
+                    disabled={transactionId !== ''}
+                    label="converterSkipOnFailure?"
+                    checked={converterSkipOnFailure}
+                    onClick={() => setConverterSkipOnFailure(!converterSkipOnFailure)}
+                  />
+                </Form.Field>
+              }
             </Form>
           </Grid.Column>
           <Grid.Column />

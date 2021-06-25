@@ -1,22 +1,22 @@
 import useAxios from 'axios-hooks'
 import { useContext, useEffect, useState } from 'react'
 import { Divider, Icon } from 'semantic-ui-react'
-import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
+import { ErrorMessage, getNestedObject } from '@statisticsnorway/dapla-js-utilities'
 
 import CopyFileProgress from './CopyFileProgress'
 import { LanguageContext } from '../../../context/AppContext'
+import { API } from '../../../configurations'
+import { APP_STEPS } from '../../../enums'
 
-function CopyFileStatus ({ fileSize, transactionId }) {
+function CopyFileStatus ({ file, fileSize, transactionId }) {
   const { language } = useContext(LanguageContext)
 
   const [ready, setReady] = useState(false)
   const [readBytes, setReadBytes] = useState(0)
   const [statusError, setStatusError] = useState(null)
 
-  const [{
-    error
-  }, refetch] = useAxios(
-    `${window.__ENV.REACT_APP_API}/cmd/id/${transactionId}`,
+  const [{ loading, error }, refetch] = useAxios(
+    `${window.__ENV.REACT_APP_API}${API.COMMAND}${transactionId}`,
     { manual: true, useCache: false }
   )
 
@@ -27,20 +27,20 @@ function CopyFileStatus ({ fileSize, transactionId }) {
 
     const checkStatus = async () => {
       await refetch().then(res => {
-        if (res.data.state.status === 'completed') {
+        if (res.data.state.status === API.STATUS.COMPLETED) {
           setReady(true)
-          setReadBytes(res.data.result.status['read-bytes'])
+          setReadBytes(getNestedObject(res, API.READ_BYTES_PATH))
           clearInterval(interval)
         }
 
-        if (res.data.state.status === 'in-progress') {
+        if (res.data.state.status === API.STATUS.IN_PROGRESS) {
           setReady(true)
-          setReadBytes(res.data.result.status['read-bytes'])
+          setReadBytes(getNestedObject(res, API.READ_BYTES_PATH))
         }
 
-        if (res.data.state.status === 'error') {
+        if (res.data.state.status === API.STATUS.ERROR) {
           setReady(true)
-          setStatusError(res.data.state.errorCause)
+          setStatusError(getNestedObject(res, API.ERROR_PATH))
           clearInterval(interval)
         }
       })
@@ -53,11 +53,11 @@ function CopyFileStatus ({ fileSize, transactionId }) {
   return (
     <>
       {!ready && !error && !statusError && <Icon color="blue" name="sync alternate" loading />}
-      {ready && !error && !statusError && `File copy initiated ...`}
-      {ready && !statusError && <CopyFileProgress readBytes={readBytes} fileSize={fileSize} />}
+      {ready && !error && !statusError && APP_STEPS.COPY.COPY_INITIATED[language]}
+      {ready && !error && !statusError && <CopyFileProgress file={file} readBytes={readBytes} fileSize={fileSize} />}
       <Divider hidden />
-      {error && <ErrorMessage error={error} language={language} />}
-      {statusError && <ErrorMessage error={statusError} language={language} />}
+      {!loading && error && <ErrorMessage error={error} language={language} />}
+      {!loading && statusError && <ErrorMessage error={statusError} language={language} />}
     </>
   )
 }

@@ -2,41 +2,17 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from 'semantic-ui-react'
 
-import { APP } from '../../../configurations'
-
-const availableCommands = ['any-import', 'csv-import', 'json-import', 'archive-import']
-
-const assignCommands = fileExtension => {
-  let commands = ['any-import']
-
-  switch (fileExtension) {
-    case 'csv':
-      commands.push(availableCommands[1])
-      break
-
-    case 'json':
-      commands.push(availableCommands[2])
-      break
-
-    case 'zip':
-      commands.push(availableCommands[3])
-      break
-
-    default:
-  }
-
-  return commands
-}
+import { API, APP } from '../../../configurations'
 
 function SelectFileOperation ({ file }) {
   const [fileExtension, setFileExtension] = useState(file.filename.split('.').pop())
-  const [commands, setCommands] = useState(assignCommands(fileExtension))
+  const [commands, setCommands] = useState(API.ASSIGN_COMMANDS(fileExtension))
 
   useEffect(() => {
     const fileExtension = file.filename.split('.').pop()
 
     setFileExtension(fileExtension)
-    setCommands(assignCommands(fileExtension))
+    setCommands(API.ASSIGN_COMMANDS(fileExtension))
   }, [file])
 
   return (
@@ -45,7 +21,7 @@ function SelectFileOperation ({ file }) {
       {commands !== undefined &&
       <Button.Group width={commands.length} color="blue">
         {commands.map(command => {
-          if (!['any-import', 'csv-import'].includes(command)) {
+          if (!API.OPERATIONS.slice(0, 2).includes(command)) {
             return <Button key={command} disabled content={command} />
           } else {
             return (
