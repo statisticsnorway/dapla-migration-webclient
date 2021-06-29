@@ -5,10 +5,12 @@ import { Button, Container, Divider, Icon } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
 import AnyImportStatus from './AnyImportStatus'
-import { LanguageContext } from '../../../../context/AppContext'
-// import { API } from '../../../../configurations'
+import { ApiContext, LanguageContext } from '../../../../context/AppContext'
+import { API, API_INSTRUCTIONS } from '../../../../configurations'
+import { APP_STEPS } from '../../../../enums'
 
 function AnyImport ({ file }) {
+  const { devToken } = useContext(ApiContext)
   const { language } = useContext(LanguageContext)
 
   const [transactionId, setTransactionId] = useState('')
@@ -18,28 +20,14 @@ function AnyImport ({ file }) {
   const initiateFileImport = async () => {
     try {
       const operationId = uuidv4()
-      const importInstructions = {
-        'id': operationId,
-        'command': {
-          'target': 'agent',
-          'cmd': 'any-import',
-          'args': {
-            'template': {
-              'files': [`${file.folder}/${file.filename}`]
-            }
-          }
-        },
-        'state': {}
-      }
+      const importInstructions = API_INSTRUCTIONS.ANY_IMPORT(operationId, [`${file.folder}/${file.filename}`])
 
-      // TODO: handle auth header for local testing differently
-      await executePut({
-/*        headers: {
-          Authorization: `Bearer ${API.TOKEN}`
-        },*/
-        data: importInstructions,
-        url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
-      })
+      await executePut(API.HANDLE_PUT(
+        process.env.NODE_ENV,
+        importInstructions,
+        `${window.__ENV.REACT_APP_API}${API.COMMAND}${operationId}`,
+        devToken
+      ))
 
       setTransactionId(operationId)
     } catch (e) {
@@ -49,13 +37,18 @@ function AnyImport ({ file }) {
 
   return (
     <Container textAlign="center">
-      <Button primary size="huge" disabled={transactionId !== ''} onClick={() => initiateFileImport()}>
+      <Button
+        primary
+        size="huge"
+        onClick={() => initiateFileImport()}
+        disabled={loading || transactionId !== ''}
+      >
         <Icon name="cloud upload" />
-        Initiate import
+        {APP_STEPS.IMPORT.INITIATE_IMPORT[language]}
       </Button>
       <Divider hidden />
-      {error && <ErrorMessage error={error} language={language} />}
-      {transactionId !== '' && !loading && <AnyImportStatus file={file} transactionId={transactionId} />}
+      {!loading && error && <ErrorMessage error={error} language={language} />}
+      {!loading && transactionId !== '' && <AnyImportStatus file={file} transactionId={transactionId} />}
     </Container>
   )
 }

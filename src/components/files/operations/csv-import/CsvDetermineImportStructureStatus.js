@@ -1,10 +1,11 @@
 import useAxios from 'axios-hooks'
 import { useContext, useEffect, useState } from 'react'
 import { Icon } from 'semantic-ui-react'
-import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
+import { ErrorMessage, getNestedObject } from '@statisticsnorway/dapla-js-utilities'
 
-import CsvFileImport from './CsvFileImport'
+import CsvImport from './CsvImport'
 import { LanguageContext } from '../../../../context/AppContext'
+import { API } from '../../../../configurations'
 
 function CsvDetermineImportStructureStatus ({ file, fileData, transactionId }) {
   const { language } = useContext(LanguageContext)
@@ -12,12 +13,8 @@ function CsvDetermineImportStructureStatus ({ file, fileData, transactionId }) {
   const [ready, setReady] = useState(false)
   const [statusError, setStatusError] = useState(null)
 
-  const [{
-    data,
-    loading,
-    error
-  }, refetch] = useAxios(
-    `${window.__ENV.REACT_APP_API}/cmd/id/${transactionId}`,
+  const [{ data, loading, error }, refetch] = useAxios(
+    `${window.__ENV.REACT_APP_API}${API.COMMAND}${transactionId}`,
     { manual: true, useCache: false }
   )
 
@@ -28,14 +25,14 @@ function CsvDetermineImportStructureStatus ({ file, fileData, transactionId }) {
 
     const checkStatus = async () => {
       await refetch().then(res => {
-        if (res.data.state.status === 'completed') {
+        if (res.data.state.status === API.STATUS.COMPLETED) {
           setReady(true)
           clearInterval(interval)
         }
 
-        if (res.data.state.status === 'error') {
+        if (res.data.state.status === API.STATUS.ERROR) {
           setReady(true)
-          setStatusError(res.data.state.errorCause)
+          setStatusError(getNestedObject(res, API.ERROR_PATH))
           clearInterval(interval)
         }
       })
@@ -48,9 +45,9 @@ function CsvDetermineImportStructureStatus ({ file, fileData, transactionId }) {
   return (
     <>
       {!ready && !error && !statusError && <Icon color="blue" size="big" name="sync alternate" loading />}
-      {ready && !loading && !error && !statusError && <CsvFileImport file={file} data={data.result.template} fileData={fileData} />}
-      {error && <ErrorMessage error={error} language={language} />}
-      {statusError && <ErrorMessage error={statusError} language={language} />}
+      {ready && !error && !statusError && <CsvImport file={file} data={data.result.template} fileData={fileData} />}
+      {!loading && error && <ErrorMessage error={error} language={language} />}
+      {!loading && statusError && <ErrorMessage error={statusError} language={language} />}
     </>
   )
 }

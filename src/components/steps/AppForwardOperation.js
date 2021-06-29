@@ -1,12 +1,13 @@
-import { AnyImport, CsvImport } from '../files/operations'
+import { AnyImport, HeadOfFile } from '../files/operations'
+import { API } from '../../configurations'
 
 function AppForwardOperation ({ operation, file }) {
   switch (operation.operation) {
-    case 'any-import':
+    case API.OPERATIONS[0]:
       return <AnyImport file={file} />
 
-    case 'csv-import':
-      return <CsvImport file={file} />
+    case API.OPERATIONS[1]:
+      return <HeadOfFile file={file} operation={operation.operation} />
 
     default:
       return (

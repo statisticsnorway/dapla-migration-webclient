@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { Link, Route, Switch, useLocation } from 'react-router-dom'
 import { Divider, Icon, Ref, Segment, Step } from 'semantic-ui-react'
 
-import { AppCopy, AppSelectOperation, AppMenu, AppSettings, AppDoOperation } from './components'
+import { AppCopy, AppDoOperation, AppMenu, AppSelectOperation, AppSettings } from './components'
 import { APP } from './configurations'
 
 function App () {

@@ -1,37 +1,42 @@
 import useAxios from 'axios-hooks'
 import { useContext, useEffect, useState } from 'react'
 import { Icon } from 'semantic-ui-react'
-import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
+import { ErrorMessage, getNestedObject } from '@statisticsnorway/dapla-js-utilities'
 
 import { LanguageContext } from '../../../context/AppContext'
+import { API } from '../../../configurations'
+import { APP_STEPS } from '../../../enums'
 
-function ScanFilesStatus ({ transactionId, ready, setReady }) {
+function ScanFilesStatus ({ transactionId }) {
   const { language } = useContext(LanguageContext)
 
+  const [ready, setReady] = useState(false)
   const [statusError, setStatusError] = useState(null)
 
-  const [{
-    loading,
-    error
-  }, refetch] = useAxios(
-    `${window.__ENV.REACT_APP_API}/cmd/id/${transactionId}`,
+  const [{ loading, error }, refetch] = useAxios(
+    `${window.__ENV.REACT_APP_API}${API.COMMAND}${transactionId}`,
     { manual: true, useCache: false }
   )
 
   useEffect(() => {
     const interval = setInterval(() => {
       checkStatus().then()
-    }, 5000)
+    }, 2000)
 
     const checkStatus = async () => {
       await refetch().then(res => {
-        if (res.data.state.status === 'completed') {
+        if (res.data.state.status === API.STATUS.COMPLETED) {
           setReady(true)
           clearInterval(interval)
         }
 
-        if (res.data.state.status === 'error') {
-          setStatusError(res.data.state.errorCause)
+        if (res.data.state.status === API.STATUS.IN_PROGRESS) {
+          setReady(false)
+        }
+
+        if (res.data.state.status === API.STATUS.ERROR) {
+          setStatusError(getNestedObject(res, API.ERROR_PATH))
+          setReady(true)
           clearInterval(interval)
         }
       })
@@ -46,17 +51,17 @@ function ScanFilesStatus ({ transactionId, ready, setReady }) {
       {!ready && !error && !statusError &&
       <>
         <Icon style={{ marginRight: '1rem' }} size="large" color="blue" name="sync alternate" loading />
-        Scanning ...
+        {APP_STEPS.SCAN.SCANNING[language]}
       </>
       }
-      {ready && !loading && !error && !statusError &&
+      {ready && !error && !statusError &&
       <>
         <Icon style={{ marginRight: '1rem' }} size="large" color="green" name="check" />
-        Scan complete, files can now be listed below
+        {APP_STEPS.SCAN.COMPLETE[language]}
       </>
       }
-      {error && <ErrorMessage error={error} language={language} />}
-      {statusError && <ErrorMessage error={statusError} language={language} />}
+      {!loading && error && <ErrorMessage error={error} language={language} />}
+      {!loading && statusError && <ErrorMessage error={statusError} language={language} />}
     </>
   )
 }

@@ -5,47 +5,34 @@ import { Button } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
 import CsvDetermineImportStructureStatus from './CsvDetermineImportStructureStatus'
-import { LanguageContext } from '../../../../context/AppContext'
-// import { API } from '../../../../configurations'
+import { ApiContext, LanguageContext } from '../../../../context/AppContext'
+import { API, API_INSTRUCTIONS } from '../../../../configurations'
+import { APP_STEPS } from '../../../../enums'
 
 function CsvDetermineImportStructure ({ file, fileData, delimiter, charset }) {
+  const { devToken } = useContext(ApiContext)
   const { language } = useContext(LanguageContext)
 
   const [transactionId, setTransactionId] = useState('')
 
-  const [{ error }, executePut] = useAxios({ method: 'PUT' }, { manual: true, useCache: false })
+  const [{ error, loading }, executePut] = useAxios({ method: 'PUT' }, { manual: true, useCache: false })
 
   const initiateFileStructureDetect = async () => {
     try {
       const operationId = uuidv4()
-      const inspectInstructions = {
-        'id': operationId,
-        'command': {
-          'target': 'agent',
-          'cmd': 'determine-csv-import-structure',
-          'args': {
-            'template': {
-              'files': [`${file.folder}/${file.filename}`],
-              'structure': {
-                'schema': {
-                  'delimiter': delimiter,
-                  'charset': charset
-                }
-              }
-            }
-          }
-        },
-        'state': {}
-      }
+      const inspectInstructions = API_INSTRUCTIONS.CSV_INSPECT(
+        operationId,
+        [`${file.folder}/${file.filename}`],
+        delimiter,
+        charset
+      )
 
-      // TODO: handle auth header for local testing differently
-      await executePut({
-/*        headers: {
-          Authorization: `Bearer ${API.TOKEN}`
-        },*/
-        data: inspectInstructions,
-        url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
-      })
+      await executePut(API.HANDLE_PUT(
+        process.env.NODE_ENV,
+        inspectInstructions,
+        `${window.__ENV.REACT_APP_API}${API.COMMAND}${operationId}`,
+        devToken
+      ))
 
       setTransactionId(operationId)
     } catch (e) {
@@ -63,14 +50,14 @@ function CsvDetermineImportStructure ({ file, fileData, delimiter, charset }) {
         primary
         size="large"
         icon="file code"
-        disabled={transactionId !== ''}
-        content="Determine file structure"
+        disabled={loading || transactionId !== ''}
         onClick={() => initiateFileStructureDetect()}
+        content={APP_STEPS.CSV.DETERMINE_STRUCTURE[language]}
       />
-      {transactionId !== '' &&
+      {!loading && transactionId !== '' &&
       <CsvDetermineImportStructureStatus file={file} fileData={fileData} transactionId={transactionId} />
       }
-      {error && <ErrorMessage error={error} language={language} />}
+      {!loading && error && <ErrorMessage error={error} language={language} />}
     </>
   )
 }

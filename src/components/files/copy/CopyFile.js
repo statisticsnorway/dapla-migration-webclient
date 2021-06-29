@@ -1,14 +1,16 @@
 import useAxios from 'axios-hooks'
-import { useContext, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { useContext, useEffect, useState } from 'react'
 import { Button, Divider } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
 import CopyFileStatus from './CopyFileStatus'
-import { LanguageContext } from '../../../context/AppContext'
-// import { API } from '../../../configurations'
+import { ApiContext, LanguageContext } from '../../../context/AppContext'
+import { API, API_INSTRUCTIONS } from '../../../configurations'
+import { APP_STEPS } from '../../../enums'
 
 function CopyFile ({ file, fileSize }) {
+  const { devToken } = useContext(ApiContext)
   const { language } = useContext(LanguageContext)
 
   const [transactionId, setTransactionId] = useState('')
@@ -18,26 +20,14 @@ function CopyFile ({ file, fileSize }) {
   const initiateFileCopy = async () => {
     try {
       const operationId = uuidv4()
-      const copyInstructions = {
-        'id': operationId,
-        'command': {
-          'target': 'sas-agent',
-          'cmd': 'copy',
-          'args': {
-            'path': file
-          }
-        },
-        'state': {}
-      }
+      const copyInstructions = API_INSTRUCTIONS.COPY(operationId, file)
 
-      // TODO: handle auth header for local testing differently
-      await executePut({
-/*        headers: {
-          Authorization: `Bearer ${API.TOKEN}`
-        },*/
-        data: copyInstructions,
-        url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
-      })
+      await executePut(API.HANDLE_PUT(
+        process.env.NODE_ENV,
+        copyInstructions,
+        `${window.__ENV.REACT_APP_API}${API.COMMAND}${operationId}`,
+        devToken
+      ))
 
       setTransactionId(operationId)
     } catch (e) {
@@ -54,13 +44,15 @@ function CopyFile ({ file, fileSize }) {
       <Button
         primary
         size="large"
-        content="Initiate copy"
         onClick={() => initiateFileCopy()}
         disabled={loading || transactionId !== ''}
+        content={APP_STEPS.COPY.INITIATE_COPY[language]}
       />
-      {transactionId !== '' && <CopyFileStatus file={file} fileSize={fileSize} transactionId={transactionId} />}
+      {!loading && transactionId !== '' &&
+      <CopyFileStatus file={file} fileSize={fileSize} transactionId={transactionId} />
+      }
       <Divider hidden />
-      {error && <ErrorMessage error={error} language={language} />}
+      {!loading && error && <ErrorMessage error={error} language={language} />}
     </>
   )
 }
