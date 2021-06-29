@@ -59,6 +59,8 @@ function HeadOfFile ({ file, operation }) {
             if (!accordionOpen) {
               setTransactionId('')
               initiateFileHead().then()
+            } else {
+              setTransactionId('')
             }
           }}>
           <Icon name="dropdown" />

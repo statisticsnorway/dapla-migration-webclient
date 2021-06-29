@@ -1,18 +1,21 @@
 import useAxios from 'axios-hooks'
 import { useContext, useEffect, useState } from 'react'
 import { Divider, Icon, Progress } from 'semantic-ui-react'
-import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
+import { ErrorMessage, getNestedObject } from '@statisticsnorway/dapla-js-utilities'
 
 import { LanguageContext } from '../../../../context/AppContext'
+import { API } from '../../../../configurations'
 
 function AnyImportStatus ({ file, transactionId }) {
   const { language } = useContext(LanguageContext)
 
   const [ready, setReady] = useState(false)
+  const [state, setState] = useState(null)
+  const [status, setStatus] = useState(null)
   const [statusError, setStatusError] = useState(null)
 
   const [{ data, loading, error }, refetch] = useAxios(
-    `${window.__ENV.REACT_APP_API}/cmd/id/${transactionId}`,
+    `${window.__ENV.REACT_APP_API}${API.COMMAND}${transactionId}`,
     { manual: true, useCache: false }
   )
 
@@ -23,14 +26,23 @@ function AnyImportStatus ({ file, transactionId }) {
 
     const checkStatus = async () => {
       await refetch().then(res => {
-        if (res.data.state.status === 'completed') {
+        if (res.data.state.status === API.STATUS.COMPLETED) {
           setReady(true)
+          setState(null)
+          setStatus(null)
           clearInterval(interval)
         }
 
-        if (res.data.state.status === 'error') {
+        if (res.data.state.status === API.STATUS.IN_PROGRESS) {
+          setState(res.data.state)
+          setStatus(res.data.result.status)
+        }
+
+        if (res.data.state.status === API.STATUS.ERROR) {
           setReady(true)
-          setStatusError(res.data.state.errorCause)
+          setState(null)
+          setStatus(null)
+          setStatusError(getNestedObject(res, API.ERROR_PATH))
           clearInterval(interval)
         }
       })
@@ -46,10 +58,12 @@ function AnyImportStatus ({ file, transactionId }) {
         total={1}
         progress="ratio"
         error={error || statusError}
-        value={ready ? statusError ? 0 : 1 : 0}
         success={ready && !error && !statusError}
         indicating={!ready && !error && !statusError}
+        value={ready ? error || statusError ? 0 : 1 : 0}
       />
+      {!ready && state !== null && <p>{JSON.stringify(state, null, 2)}</p>}
+      {!ready && status !== null && <p>{JSON.stringify(status, null, 2)}</p>}
       {ready && !loading && !error && !statusError &&
       <>
         {`Start time: ${data.state.startTime}`}
@@ -62,11 +76,11 @@ function AnyImportStatus ({ file, transactionId }) {
         {JSON.stringify(data.result.status, null, 2)}
         <Divider hidden />
         File can be found in bucket
-        <b>{` gs://ssb-data-prod-kilde-ssb-onprem-copy${file.folder}/${file.filename}`}</b>
+        <b>{` gs://ssb-data-prod-kilde-ssb-onprem-copy/< brukernavn >${file.folder}/< timestamp >/${file.filename}`}</b>
       </>
       }
-      {error && <ErrorMessage error={error} language={language} />}
-      {statusError && <ErrorMessage error={statusError} language={language} />}
+      {!loading && error && <ErrorMessage error={error} language={language} />}
+      {!loading && statusError && <ErrorMessage error={statusError} language={language} />}
     </>
   )
 }

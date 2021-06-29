@@ -171,7 +171,7 @@ function CsvImport ({ file, data, fileData }) {
         {transactionId !== '' && !loading &&
         <Grid.Row>
           <Grid.Column>
-            <CsvImportStatus file={file} transactionId={transactionId} />
+            <CsvImportStatus file={file} transactionId={transactionId} convertAfterImport={convertAfterImport} />
           </Grid.Column>
         </Grid.Row>
         }

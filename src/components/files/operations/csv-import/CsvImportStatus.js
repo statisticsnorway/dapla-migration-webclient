@@ -6,7 +6,7 @@ import { ErrorMessage, getNestedObject } from '@statisticsnorway/dapla-js-utilit
 import { LanguageContext } from '../../../../context/AppContext'
 import { API } from '../../../../configurations'
 
-function CsvImportStatus ({ file, transactionId }) {
+function CsvImportStatus ({ file, transactionId, convertAfterImport }) {
   const { language } = useContext(LanguageContext)
 
   const [ready, setReady] = useState(false)
@@ -56,13 +56,13 @@ function CsvImportStatus ({ file, transactionId }) {
     <>
       <Progress
         progress
-        percent={ready ? 100 : 0}
         error={error || statusError}
         success={ready && !error && !statusError}
         indicating={!ready && !error && !statusError}
+        percent={ready ? error || statusError ? 0 : 100 : 0}
       />
-      {state !== null && <p>{JSON.stringify(state, null, 2)}</p>}
-      {status !== null && <p>{JSON.stringify(status, null, 2)}</p>}
+      {!ready && state !== null && <p>{JSON.stringify(state, null, 2)}</p>}
+      {!ready && status !== null && <p>{JSON.stringify(status, null, 2)}</p>}
       {ready && !loading && !error &&
       <>
         {`Start time: ${data.state.startTime}`}
@@ -75,7 +75,11 @@ function CsvImportStatus ({ file, transactionId }) {
         {JSON.stringify(data.result.status, null, 2)}
         <Divider hidden />
         File can be found in bucket
-        <b>{` gs://ssb-data-prod-kilde-migration/kilde/migration${file.folder}/< timestamp >/${file.filename}`}</b>
+        {convertAfterImport ?
+          <b>{` gs://ssb-data-prod-kilde-migration/kilde/migration${file.folder}/< timestamp >/${file.filename}`}</b>
+          :
+          <b>{` gs://ssb-rawdata-prod-migration/kilde/migration${file.folder}/< timestamp >/${file.filename}`}</b>
+        }
       </>
       }
       {!loading && error && <ErrorMessage error={error} language={language} />}

@@ -26,7 +26,7 @@ function HeadOfFileStatus ({ file, transactionId, operation }) {
 
     const checkStatus = async () => {
       await refetch().then(res => {
-        if (res.data.state.status === API.STATUS.COMPLETE) {
+        if (res.data.state.status === API.STATUS.COMPLETED) {
           setReady(true)
           clearInterval(interval)
         }
@@ -46,11 +46,8 @@ function HeadOfFileStatus ({ file, transactionId, operation }) {
   return (
     <>
       {!ready && !error && !statusError && <Icon color="blue" size="big" name="sync alternate" loading />}
-      {ready && !error && !statusError && operation === API.OPERATIONS[1] ?
-        <CsvHeadOfFileContent file={file} />
-        :
-        <HeadOfFileContent file={file} />
-      }
+      {ready && !error && !statusError && operation === API.OPERATIONS[1] && <CsvHeadOfFileContent file={file} />}
+      {ready && !error && !statusError && operation !== API.OPERATIONS[1] && <HeadOfFileContent file={file} />}
       {!loading && error && <ErrorMessage error={error} language={language} />}
       {!loading && statusError && <ErrorMessage error={statusError} language={language} />}
     </>
