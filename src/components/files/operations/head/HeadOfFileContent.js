@@ -1,40 +1,26 @@
 import useAxios from 'axios-hooks'
 import AceEditor from 'react-ace'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Divider, Form, Icon } from 'semantic-ui-react'
 
 import 'ace-builds/src-noconflict/mode-javascript'
 import 'ace-builds/src-noconflict/theme-github'
 
-const encodeOptions = [
-  {
-    key: 'UTF-8',
-    text: 'Unicode 8',
-    value: 'UTF-8'
-  },
-  {
-    key: 'us-ascii',
-    text: 'US-ASCII (7-bit)',
-    value: 'us-ascii'
-  },
-  {
-    key: 'ISO-8859-1',
-    text: 'Windows Latin-1',
-    value: 'ISO-8859-1'
-  }
-]
+import { LanguageContext } from '../../../../context/AppContext'
+import { API, useWindowSize } from '../../../../configurations'
+import { APP_STEPS } from '../../../../enums'
 
 function HeadOfFileContent ({ file }) {
-  const [ready, setReady] = useState(false)
-  const [charset, setCharset] = useState('UTF-8')
-  const [stringValue, setStringValue] = useState('')
+  const { language } = useContext(LanguageContext)
 
-  const [{
-    data,
-    loading,
-    error
-  }, refetch] = useAxios(
-    `${window.__ENV.REACT_APP_API}/agent/head?file=${file.folder}/${file.filename}`,
+  const { editorWidth } = useWindowSize()
+
+  const [ready, setReady] = useState(false)
+  const [stringValue, setStringValue] = useState('')
+  const [charset, setCharset] = useState(API.ENCODE_OPTIONS[0].value)
+
+  const [{ data, loading, error }, refetch] = useAxios(
+    `${window.__ENV.REACT_APP_API}${API.HEAD}${file.folder}/${file.filename}`,
     { manual: true, useCache: false }
   )
 
@@ -69,23 +55,22 @@ function HeadOfFileContent ({ file }) {
 
   return (
     <>
-      {!ready && !error && <Icon color="blue" size="big" name="sync alternate" loading />}
+      {!ready && !loading && !error && <Icon color="blue" size="big" name="sync alternate" loading />}
       {ready && !loading && !error &&
       <>
         <Form size="large">
           <Form.Select
             inline
             value={charset}
-            label="Charset"
-            placeholder="Charset"
-            options={encodeOptions}
+            options={API.ENCODE_OPTIONS}
+            label={APP_STEPS.HEAD.CHARSET[language]}
+            placeholder={APP_STEPS.HEAD.CHARSET[language]}
             onChange={(e, { value }) => {setCharset(value)}}
           />
         </Form>
         <Divider hidden />
         <AceEditor
           fontSize={14}
-          width="1836px"
           height="250px"
           theme="github"
           readOnly={true}
@@ -93,6 +78,7 @@ function HeadOfFileContent ({ file }) {
           value={stringValue}
           showPrintMargin={false}
           name="UNIQUE_ID_OF_DIV"
+          width={`${editorWidth.toString()}px`}
           editorProps={{ $blockScrolling: true }}
         />
       </>

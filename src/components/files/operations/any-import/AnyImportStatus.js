@@ -11,11 +11,7 @@ function AnyImportStatus ({ file, transactionId }) {
   const [ready, setReady] = useState(false)
   const [statusError, setStatusError] = useState(null)
 
-  const [{
-    data,
-    loading,
-    error
-  }, refetch] = useAxios(
+  const [{ data, loading, error }, refetch] = useAxios(
     `${window.__ENV.REACT_APP_API}/cmd/id/${transactionId}`,
     { manual: true, useCache: false }
   )

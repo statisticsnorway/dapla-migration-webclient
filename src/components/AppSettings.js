@@ -56,7 +56,7 @@ function AppSettings ({ open, setOpen }) {
             label={SETTINGS.API[language]}
             error={!!error && !settingsEdited}
             placeholder={SETTINGS.API[language]}
-            onChange={(event, { value }) => changeSettings(value)}
+            onChange={(e, { value }) => changeSettings(value)}
             onKeyPress={({ key }) => key === 'Enter' && applySettings()}
             icon={!loading && !settingsEdited && !error ?
               <Icon name="check" color="green" /> : null
@@ -66,7 +66,7 @@ function AppSettings ({ open, setOpen }) {
           <Form.TextArea
             rows={6}
             placeholder="Just paste token and close settings"
-            onChange={(event, { value }) => setDevToken(value)}
+            onChange={(e, { value }) => setDevToken(value)}
             label="dev-token (./bin/generate-test-jwt.sh -u test@junit)"
           />
           }

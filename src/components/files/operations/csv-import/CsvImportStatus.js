@@ -1,11 +1,12 @@
 import useAxios from 'axios-hooks'
 import { useContext, useEffect, useState } from 'react'
 import { Divider, Icon, Progress } from 'semantic-ui-react'
-import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
+import { ErrorMessage, getNestedObject } from '@statisticsnorway/dapla-js-utilities'
 
 import { LanguageContext } from '../../../../context/AppContext'
+import { API } from '../../../../configurations'
 
-function CsvFileImportStatus ({ file, transactionId }) {
+function CsvImportStatus ({ file, transactionId }) {
   const { language } = useContext(LanguageContext)
 
   const [ready, setReady] = useState(false)
@@ -13,12 +14,8 @@ function CsvFileImportStatus ({ file, transactionId }) {
   const [status, setStatus] = useState(null)
   const [statusError, setStatusError] = useState(null)
 
-  const [{
-    data,
-    loading,
-    error
-  }, refetch] = useAxios(
-    `${window.__ENV.REACT_APP_API}/cmd/id/${transactionId}`,
+  const [{ data, loading, error }, refetch] = useAxios(
+    `${window.__ENV.REACT_APP_API}${API.COMMAND}${transactionId}`,
     { manual: true, useCache: false }
   )
 
@@ -29,23 +26,23 @@ function CsvFileImportStatus ({ file, transactionId }) {
 
     const checkStatus = async () => {
       await refetch().then(res => {
-        if (res.data.state.status === 'completed') {
+        if (res.data.state.status === API.STATUS.COMPLETED) {
           setReady(true)
           setState(null)
           setStatus(null)
           clearInterval(interval)
         }
 
-        if (res.data.state.status === 'in-progress') {
+        if (res.data.state.status === API.STATUS.IN_PROGRESS) {
           setState(res.data.state)
           setStatus(res.data.result.status)
         }
 
-        if (res.data.state.status === 'error') {
+        if (res.data.state.status === API.STATUS.ERROR) {
           setReady(true)
           setState(null)
           setStatus(null)
-          setStatusError(res.data.state.errorCause)
+          setStatusError(getNestedObject(res, API.ERROR_PATH))
           clearInterval(interval)
         }
       })
@@ -78,13 +75,13 @@ function CsvFileImportStatus ({ file, transactionId }) {
         {JSON.stringify(data.result.status, null, 2)}
         <Divider hidden />
         File can be found in bucket
-        <b>{` gs://ssb-data-prod-kilde-migration/kilde/migration${file.folder}/${file.filename}`}</b>
+        <b>{` gs://ssb-data-prod-kilde-migration/kilde/migration${file.folder}/< timestamp >/${file.filename}`}</b>
       </>
       }
-      {error && <ErrorMessage error={error} language={language} />}
-      {statusError && <ErrorMessage error={statusError} language={language} />}
+      {!loading && error && <ErrorMessage error={error} language={language} />}
+      {!loading && statusError && <ErrorMessage error={statusError} language={language} />}
     </>
   )
 }
 
-export default CsvFileImportStatus
+export default CsvImportStatus

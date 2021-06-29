@@ -1,4 +1,5 @@
 export { API, API_INSTRUCTIONS } from './API'
 export { APP } from './APP'
 export { FILE } from './FILE'
+export { useWindowSize } from './HOOKS'
 export { TEST_CONFIGURATIONS } from './TEST'

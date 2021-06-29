@@ -5,20 +5,12 @@ import { Accordion, Divider, Form, Icon } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
 import HeadOfFileStatus from './HeadOfFileStatus'
-import { LanguageContext } from '../../../../context/AppContext'
-// import { API } from '../../../../configurations'
+import { ApiContext, LanguageContext } from '../../../../context/AppContext'
+import { API, API_INSTRUCTIONS } from '../../../../configurations'
+import { APP_STEPS } from '../../../../enums'
 
-const linesToShowOptions = Array.from({ length: 9 }, (x, i) => {
-  const lines = i + 2
-
-  return ({
-    key: lines,
-    text: lines,
-    value: lines
-  })
-})
-
-function HeadOfFile ({ file }) {
+function HeadOfFile ({ file, operation }) {
+  const { devToken } = useContext(ApiContext)
   const { language } = useContext(LanguageContext)
 
   const [linesToShow, setLinesToShow] = useState(2)
@@ -30,27 +22,14 @@ function HeadOfFile ({ file }) {
   const initiateFileHead = async () => {
     try {
       const operationId = uuidv4()
-      const headInstructions = {
-        'id': operationId,
-        'command': {
-          'target': 'agent',
-          'cmd': 'head',
-          'args': {
-            'file': `${file.folder}/${file.filename}`,
-            'lines': linesToShow.toString()
-          }
-        },
-        'state': {}
-      }
+      const headInstructions = API_INSTRUCTIONS.HEAD(operationId, `${file.folder}/${file.filename}`, linesToShow.toString())
 
-      // TODO: handle auth header for local testing differently
-      await executePut({
-/*        headers: {
-          Authorization: `Bearer ${API.TOKEN}`
-        },*/
-        data: headInstructions,
-        url: `${window.__ENV.REACT_APP_API}/cmd/id/${operationId}`
-      })
+      await executePut(API.HANDLE_PUT(
+        process.env.NODE_ENV,
+        headInstructions,
+        `${window.__ENV.REACT_APP_API}${API.COMMAND}${operationId}`,
+        devToken
+      ))
 
       setTransactionId(operationId)
     } catch (e) {
@@ -65,9 +44,9 @@ function HeadOfFile ({ file }) {
           inline
           compact
           value={linesToShow}
-          label="Lines to show"
-          placeholder="Lines to show"
-          options={linesToShowOptions}
+          options={API.LINES_TO_SHOW_OPTIONS(9)}
+          label={APP_STEPS.HEAD.LINES_TO_SHOW[language]}
+          placeholder={APP_STEPS.HEAD.LINES_TO_SHOW[language]}
           onChange={(e, { value }) => {setLinesToShow(value)}}
         />
       </Form>
@@ -78,15 +57,18 @@ function HeadOfFile ({ file }) {
           onClick={() => {
             setAccordionOpen(!accordionOpen)
             if (!accordionOpen) {
+              setTransactionId('')
               initiateFileHead().then()
             }
           }}>
           <Icon name="dropdown" />
-          Check file contents
+          {APP_STEPS.HEAD.HEADER[language]}
         </Accordion.Title>
         <Accordion.Content active={accordionOpen}>
-          {error && <ErrorMessage error={error} language={language} />}
-          {transactionId !== '' && !loading && <HeadOfFileStatus file={file} transactionId={transactionId} />}
+          {!loading && error && <ErrorMessage error={error} language={language} />}
+          {!loading && transactionId !== '' &&
+          <HeadOfFileStatus file={file} transactionId={transactionId} operation={operation} />
+          }
         </Accordion.Content>
       </Accordion>
     </>

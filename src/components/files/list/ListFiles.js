@@ -14,15 +14,12 @@ function ListFiles ({ agent, scanPath, initWithFile }) {
   const [path, setPath] = useState('')
   const [ready, setReady] = useState(false)
 
-  const [{ data, loading, error }, executeGet] = useAxios(
-    { method: 'GET' },
-    { manual: true, useCache: false }
-  )
+  const [{ data, loading, error }, executeGet] = useAxios({ method: 'GET' }, { manual: true, useCache: false })
 
   useEffect(() => {
     if (initWithFile) {
       const pathArray = initWithFile.split('/')
-      pathArray.splice(pathArray.length -1, 1)
+      pathArray.splice(pathArray.length - 1, 1)
       const path = pathArray.join('/')
 
       setPath(path)

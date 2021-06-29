@@ -79,10 +79,60 @@ export const APP_STEPS = {
       nb: 'Gå til fil og velg operasjon'
     }
   },
+  HEAD: {
+    HEADER: {
+      en: 'Check file contents',
+      nb: 'Vis innhold i fil'
+    },
+    LINES_TO_SHOW: {
+      en: 'Lines to show',
+      nb: 'Vis antall linjer'
+    },
+    CHARSET: {
+      en: 'Charset',
+      nb: 'Karaktersett'
+    },
+    DELIMITER: {
+      en: 'Delimiter',
+      nb: '\'Delimiter\''
+    }
+  },
   OPERATION: {
     HEADER: {
       en: 'List copied files',
       nb: 'List ut kopierte filer'
+    }
+  },
+  CSV: {
+    DETERMINE_STRUCTURE: {
+      en: 'Determine csv file structure',
+      nb: 'Fastslå csv filstruktur'
+    },
+    BOUNDARY_TYPE: {
+      en: 'Boundary type',
+      nb: 'Grensetype'
+    },
+    VALUATION: {
+      en: 'Valuation',
+      nb: 'Verdivurdering'
+    },
+    CONVERT_AFTER_IMPORT: {
+      en: 'Convert after import?',
+      nb: 'Konverter etter import?'
+    },
+    CONVERTER_SKIP_ON_FAILURE: {
+      en: 'converterSkipOnFailure?',
+      nb: 'converterSkipOnFailure?'
+    },
+    PSEDUO: {
+      en: 'Pseudo?',
+      nb: 'Pseudo?'
+    }
+  },
+  IMPORT: {
+    INITIATE_IMPORT: {
+      en: 'Initiate import',
+      nb: 'Start importering'
     }
   }
 }
