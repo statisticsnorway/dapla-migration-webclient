@@ -1,12 +1,15 @@
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { Link, Route, Switch, useLocation } from 'react-router-dom'
 import { Divider, Icon, Ref, Segment, Step } from 'semantic-ui-react'
 
-import { AppCopy, AppDoOperation, AppMenu, AppSelectOperation, AppSettings } from './components'
+import { AppCopy, AppDoOperation, AppMenu, AppSelectOperation, AppSettings, AppStatus } from './components'
+import { LanguageContext } from './context/AppContext'
 import { APP } from './configurations'
 
 function App () {
   const appRefArea = useRef()
+
+  const { language } = useContext(LanguageContext)
 
   let location = useLocation()
 
@@ -22,14 +25,17 @@ function App () {
               <Step key={step.id} active={location.pathname.startsWith(step.route)} as={Link} to={step.route}>
                 <Icon name={step.icon} />
                 <Step.Content>
-                  <Step.Title>{step.title}</Step.Title>
-                  <Step.Description>{step.description}</Step.Description>
+                  <Step.Title>{step.title[language]}</Step.Title>
+                  <Step.Description>{step.description[language]}</Step.Description>
                 </Step.Content>
               </Step>
             )}
           </Step.Group>
           <Divider hidden />
           <Switch>
+            <Route path={APP[3].route}>
+              <AppStatus />
+            </Route>
             <Route path={`${APP[2].route}/:operation`}>
               <AppDoOperation />
             </Route>

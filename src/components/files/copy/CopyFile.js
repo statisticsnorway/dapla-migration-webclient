@@ -6,7 +6,7 @@ import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
 import CopyFileStatus from './CopyFileStatus'
 import { ApiContext, LanguageContext } from '../../../context/AppContext'
-import { API, API_INSTRUCTIONS } from '../../../configurations'
+import { API, API_INSTRUCTIONS, LOCAL_STORAGE } from '../../../configurations'
 import { APP_STEPS } from '../../../enums'
 
 function CopyFile ({ file, fileSize }) {
@@ -30,6 +30,14 @@ function CopyFile ({ file, fileSize }) {
       ))
 
       setTransactionId(operationId)
+      LOCAL_STORAGE(
+        operationId,
+        {
+          command: 'copy',
+          file: file,
+          fileSize: fileSize
+        }
+      )
     } catch (e) {
       console.log(e)
     }

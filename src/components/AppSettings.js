@@ -66,7 +66,10 @@ function AppSettings ({ open, setOpen }) {
           <Form.TextArea
             rows={6}
             placeholder="Just paste token and close settings"
-            onChange={(e, { value }) => setDevToken(value)}
+            onChange={(e, { value }) => {
+              setDevToken(value)
+              localStorage.setItem('devToken', value)
+            }}
             label="dev-token (./bin/generate-test-jwt.sh -u test@junit)"
           />
           }

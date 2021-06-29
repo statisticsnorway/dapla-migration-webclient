@@ -14,53 +14,7 @@ export const API = {
   FOLDER: '/files?folder=',
   ERROR_PATH: ['data', 'state', 'errorCause'],
   READ_BYTES_PATH: ['data', 'result', 'status', 'read-bytes'],
-  HANDLE_PUT: (env, data, url, token) => {
-    if (env === 'development') {
-      return ({
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        data: data,
-        url: url
-      })
-    } else {
-      return ({
-        data: data,
-        url: url
-      })
-    }
-  },
   OPERATIONS: ['any-import', 'csv-import', 'json-import', 'archive-import'],
-  ASSIGN_COMMANDS: fileExtension => {
-    let commands = [API.OPERATIONS[0]]
-
-    switch (fileExtension) {
-      case 'csv':
-        commands.push(API.OPERATIONS[1])
-        break
-
-      case 'json':
-        commands.push(API.OPERATIONS[2])
-        break
-
-      case 'zip':
-        commands.push(API.OPERATIONS[3])
-        break
-
-      default:
-    }
-
-    return commands
-  },
-  LINES_TO_SHOW_OPTIONS: (length) => Array.from({ length: length }, (x, i) => {
-    const lines = i + 2
-
-    return ({
-      key: lines,
-      text: lines,
-      value: lines
-    })
-  }),
   ENCODE_OPTIONS: [
     {
       key: 'UTF-8',
@@ -122,7 +76,53 @@ export const API = {
     key: valuation,
     text: valuation,
     value: valuation
-  }))
+  })),
+  HANDLE_PUT: (env, data, url, token) => {
+    if (env === 'development') {
+      return ({
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        data: data,
+        url: url
+      })
+    } else {
+      return ({
+        data: data,
+        url: url
+      })
+    }
+  },
+  ASSIGN_COMMANDS: fileExtension => {
+    let commands = [API.OPERATIONS[0]]
+
+    switch (fileExtension) {
+      case 'csv':
+        commands.push(API.OPERATIONS[1])
+        break
+
+      case 'json':
+        commands.push(API.OPERATIONS[2])
+        break
+
+      case 'zip':
+        commands.push(API.OPERATIONS[3])
+        break
+
+      default:
+    }
+
+    return commands
+  },
+  LINES_TO_SHOW_OPTIONS: (length) => Array.from({ length: length }, (x, i) => {
+    const lines = i + 2
+
+    return ({
+      key: lines,
+      text: lines,
+      value: lines
+    })
+  })
 }
 
 export const API_INSTRUCTIONS = {

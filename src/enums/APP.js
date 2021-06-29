@@ -101,38 +101,70 @@ export const APP_STEPS = {
     HEADER: {
       en: 'List copied files',
       nb: 'List ut kopierte filer'
+    },
+    CSV: {
+      DETERMINE_STRUCTURE: {
+        en: 'Determine csv file structure',
+        nb: 'Fastslå csv filstruktur'
+      },
+      BOUNDARY_TYPE: {
+        en: 'Boundary type',
+        nb: 'Grensetype'
+      },
+      VALUATION: {
+        en: 'Valuation',
+        nb: 'Verdivurdering'
+      },
+      CONVERT_AFTER_IMPORT: {
+        en: 'Convert after import?',
+        nb: 'Konverter etter import?'
+      },
+      CONVERTER_SKIP_ON_FAILURE: {
+        en: 'converterSkipOnFailure?',
+        nb: 'converterSkipOnFailure?'
+      },
+      PSEDUO: {
+        en: 'Pseudo?',
+        nb: 'Pseudo?'
+      }
+    },
+    IMPORT: {
+      INITIATE_IMPORT: {
+        en: 'Initiate import',
+        nb: 'Start importering'
+      }
     }
   },
-  CSV: {
-    DETERMINE_STRUCTURE: {
-      en: 'Determine csv file structure',
-      nb: 'Fastslå csv filstruktur'
+  STATUS: {
+    PLACEHOLDER: {
+      en: 'Status id (uuid)',
+      nb: 'Statusid (uuid)'
     },
-    BOUNDARY_TYPE: {
-      en: 'Boundary type',
-      nb: 'Grensetype'
+    MY_STATUSES: {
+      en: 'My statuses',
+      nb: 'Mine statuser'
     },
-    VALUATION: {
-      en: 'Valuation',
-      nb: 'Verdivurdering'
+    CHECK_STATUS: {
+      en: 'Check status',
+      nb: 'Sjekk status'
     },
-    CONVERT_AFTER_IMPORT: {
-      en: 'Convert after import?',
-      nb: 'Konverter etter import?'
+    ADD_STATUS: {
+      en: 'Add to my statuses',
+      nb: 'Legg til i mine statuser'
     },
-    CONVERTER_SKIP_ON_FAILURE: {
-      en: 'converterSkipOnFailure?',
-      nb: 'converterSkipOnFailure?'
-    },
-    PSEDUO: {
-      en: 'Pseudo?',
-      nb: 'Pseudo?'
-    }
-  },
-  IMPORT: {
-    INITIATE_IMPORT: {
-      en: 'Initiate import',
-      nb: 'Start importering'
+    CLEAR_STORAGE: {
+      TEXT: {
+        en: 'Remove all your statuses?',
+        nb: 'Fjern alle statusene dine?'
+      },
+      CANCEL: {
+        en: 'Cancel',
+        nb: 'Avbryt'
+      },
+      CONFIRM: {
+        en: 'Yes',
+        nb: 'Ja'
+      }
     }
   }
 }

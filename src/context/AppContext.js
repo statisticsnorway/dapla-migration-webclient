@@ -9,7 +9,7 @@ export const ApiContext = createContext({
 export const LanguageContext = createContext(LANGUAGE.LANGUAGES.NORWEGIAN.languageCode)
 
 export const AppContextProvider = (props) => {
-  const [devToken, setDevToken] = useState('')
+  const [devToken, setDevToken] = useState(localStorage.getItem('devToken') || '')
   const [api, setApi] = useState(window.__ENV.REACT_APP_API)
   const [language, setLanguage] = useState(LANGUAGE.LANGUAGES.NORWEGIAN.languageCode)
 

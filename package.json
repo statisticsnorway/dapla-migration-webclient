@@ -68,7 +68,8 @@
       "!src/enums/**",
       "!src/__tests__/test-data/**",
       "!src/components/files/**",
-      "!src/components/steps/**"
+      "!src/components/steps/**",
+      "!src/components/status/**"
     ],
     "coverageThreshold": {
       "global": {

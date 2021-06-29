@@ -6,7 +6,7 @@ import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 
 import AnyImportStatus from './AnyImportStatus'
 import { ApiContext, LanguageContext } from '../../../../context/AppContext'
-import { API, API_INSTRUCTIONS } from '../../../../configurations'
+import { API, API_INSTRUCTIONS, LOCAL_STORAGE } from '../../../../configurations'
 import { APP_STEPS } from '../../../../enums'
 
 function AnyImport ({ file }) {
@@ -30,6 +30,13 @@ function AnyImport ({ file }) {
       ))
 
       setTransactionId(operationId)
+      LOCAL_STORAGE(
+        operationId,
+        {
+          command: API.OPERATIONS[0],
+          file: file
+        }
+      )
     } catch (e) {
       console.log(e)
     }
@@ -44,7 +51,7 @@ function AnyImport ({ file }) {
         disabled={loading || transactionId !== ''}
       >
         <Icon name="cloud upload" />
-        {APP_STEPS.IMPORT.INITIATE_IMPORT[language]}
+        {APP_STEPS.OPERATION.IMPORT.INITIATE_IMPORT[language]}
       </Button>
       <Divider hidden />
       {!loading && error && <ErrorMessage error={error} language={language} />}

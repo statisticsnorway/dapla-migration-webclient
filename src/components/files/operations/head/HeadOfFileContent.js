@@ -27,7 +27,7 @@ function HeadOfFileContent ({ file }) {
   useEffect(() => {
     const interval = setInterval(() => {
       checkStatus().then()
-    }, 5000)
+    }, 2000)
 
     const checkStatus = async () => {
       await refetch().then(res => {

@@ -76,7 +76,7 @@ function AnyImportStatus ({ file, transactionId }) {
         {JSON.stringify(data.result.status, null, 2)}
         <Divider hidden />
         File can be found in bucket
-        <b>{` gs://ssb-data-prod-kilde-ssb-onprem-copy/< brukernavn >${file.folder}/< timestamp >/${file.filename}`}</b>
+        <b>{` gs://ssb-data-prod-kilde-ssb-onprem-copy/user/< username >${file.folder}/< timestamp >/${file.filename}`}</b>
       </>
       }
       {!loading && error && <ErrorMessage error={error} language={language} />}
