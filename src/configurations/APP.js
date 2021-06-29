@@ -37,5 +37,18 @@ export const APP = [
     },
     icon: 'file code',
     route: '/operation'
+  },
+  {
+    id: 'status',
+    title: {
+      en: 'Status',
+      nb: 'Status'
+    },
+    description: {
+      en: 'Check your statuses',
+      nb: 'Sjekk dine statuser'
+    },
+    icon: 'clipboard check',
+    route: '/status'
   }
 ]

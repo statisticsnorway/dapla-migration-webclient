@@ -5,7 +5,7 @@ import { Button, Checkbox, Divider, Dropdown, Form, Grid, Header, Icon, Input, S
 
 import CsvImportStatus from './CsvImportStatus'
 import { ApiContext, LanguageContext } from '../../../../context/AppContext'
-import { API, API_INSTRUCTIONS } from '../../../../configurations'
+import { API, API_INSTRUCTIONS, LOCAL_STORAGE } from '../../../../configurations'
 import { APP_STEPS } from '../../../../enums'
 
 function CsvImport ({ file, data, fileData }) {
@@ -43,6 +43,13 @@ function CsvImport ({ file, data, fileData }) {
       ))
 
       setTransactionId(operationId)
+      LOCAL_STORAGE(
+        operationId,
+        {
+          command: API.OPERATIONS[1],
+          file: data.files
+        }
+      )
     } catch (e) {
       console.log(e)
     }
@@ -71,6 +78,7 @@ function CsvImport ({ file, data, fileData }) {
               <Form.Select
                 options={API.BOUNDARY_OPTIONS}
                 value={data.metadata.boundaryType}
+                disabled={loading || transactionId !== ''}
                 label={APP_STEPS.OPERATION.CSV.BOUNDARY_TYPE[language]}
                 placeholder={APP_STEPS.OPERATION.CSV.BOUNDARY_TYPE[language]}
               >
@@ -164,7 +172,7 @@ function CsvImport ({ file, data, fileData }) {
               disabled={loading || transactionId !== ''}
             >
               <Icon name="cloud upload" />
-              {APP_STEPS.IMPORT.INITIATE_IMPORT[language]}
+              {APP_STEPS.OPERATION.IMPORT.INITIATE_IMPORT[language]}
             </Button>
           </Grid.Column>
         </Grid.Row>

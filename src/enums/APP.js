@@ -134,5 +134,37 @@ export const APP_STEPS = {
         nb: 'Start importering'
       }
     }
+  },
+  STATUS: {
+    PLACEHOLDER: {
+      en: 'Status id (uuid)',
+      nb: 'Statusid (uuid)'
+    },
+    MY_STATUSES: {
+      en: 'My statuses',
+      nb: 'Mine statuser'
+    },
+    CHECK_STATUS: {
+      en: 'Check status',
+      nb: 'Sjekk status'
+    },
+    ADD_STATUS: {
+      en: 'Add to my statuses',
+      nb: 'Legg til i mine statuser'
+    },
+    CLEAR_STORAGE: {
+      TEXT: {
+        en: 'Remove all your statuses?',
+        nb: 'Fjern alle statusene dine?'
+      },
+      CANCEL: {
+        en: 'Cancel',
+        nb: 'Avbryt'
+      },
+      CONFIRM: {
+        en: 'Yes',
+        nb: 'Ja'
+      }
+    }
   }
 }

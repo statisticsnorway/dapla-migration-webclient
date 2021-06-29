@@ -2,7 +2,7 @@ import { useContext, useRef, useState } from 'react'
 import { Link, Route, Switch, useLocation } from 'react-router-dom'
 import { Divider, Icon, Ref, Segment, Step } from 'semantic-ui-react'
 
-import { AppCopy, AppDoOperation, AppMenu, AppSelectOperation, AppSettings } from './components'
+import { AppCopy, AppDoOperation, AppMenu, AppSelectOperation, AppSettings, AppStatus } from './components'
 import { LanguageContext } from './context/AppContext'
 import { APP } from './configurations'
 
@@ -33,6 +33,9 @@ function App () {
           </Step.Group>
           <Divider hidden />
           <Switch>
+            <Route path={APP[3].route}>
+              <AppStatus />
+            </Route>
             <Route path={`${APP[2].route}/:operation`}>
               <AppDoOperation />
             </Route>
