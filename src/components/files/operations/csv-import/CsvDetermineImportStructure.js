@@ -52,7 +52,7 @@ function CsvDetermineImportStructure ({ file, fileData, delimiter, charset }) {
         icon="file code"
         disabled={loading || transactionId !== ''}
         onClick={() => initiateFileStructureDetect()}
-        content={APP_STEPS.CSV.DETERMINE_STRUCTURE[language]}
+        content={APP_STEPS.OPERATION.CSV.DETERMINE_STRUCTURE[language]}
       />
       {!loading && transactionId !== '' &&
       <CsvDetermineImportStructureStatus file={file} fileData={fileData} transactionId={transactionId} />

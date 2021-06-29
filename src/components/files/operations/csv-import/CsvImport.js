@@ -71,25 +71,25 @@ function CsvImport ({ file, data, fileData }) {
               <Form.Select
                 options={API.BOUNDARY_OPTIONS}
                 value={data.metadata.boundaryType}
-                label={APP_STEPS.CSV.BOUNDARY_TYPE[language]}
-                placeholder={APP_STEPS.CSV.BOUNDARY_TYPE[language]}
+                label={APP_STEPS.OPERATION.CSV.BOUNDARY_TYPE[language]}
+                placeholder={APP_STEPS.OPERATION.CSV.BOUNDARY_TYPE[language]}
               >
               </Form.Select>
               <Form.Select
                 value={valuation}
                 options={API.VALUATION_OPTIONS}
-                label={APP_STEPS.CSV.VALUATION[language]}
                 disabled={loading || transactionId !== ''}
-                placeholder={APP_STEPS.CSV.VALUATION[language]}
                 onChange={(e, { value }) => setValuation(value)}
+                label={APP_STEPS.OPERATION.CSV.VALUATION[language]}
+                placeholder={APP_STEPS.OPERATION.CSV.VALUATION[language]}
               >
               </Form.Select>
               <Form.Field>
                 <Checkbox
                   checked={convertAfterImport}
                   disabled={loading || transactionId !== ''}
-                  label={APP_STEPS.CSV.CONVERT_AFTER_IMPORT[language]}
                   onClick={() => setConvertAfterImport(!convertAfterImport)}
+                  label={APP_STEPS.OPERATION.CSV.CONVERT_AFTER_IMPORT[language]}
                 />
               </Form.Field>
               {convertAfterImport &&
@@ -97,8 +97,8 @@ function CsvImport ({ file, data, fileData }) {
                 <Checkbox
                   checked={converterSkipOnFailure}
                   disabled={loading || transactionId !== ''}
-                  label={APP_STEPS.CSV.CONVERTER_SKIP_ON_FAILURE[language]}
                   onClick={() => setConverterSkipOnFailure(!converterSkipOnFailure)}
+                  label={APP_STEPS.OPERATION.CSV.CONVERTER_SKIP_ON_FAILURE[language]}
                 />
               </Form.Field>
               }
@@ -145,8 +145,8 @@ function CsvImport ({ file, data, fileData }) {
                     <Table.Cell key={`${column.name}Pseudo`}>
                       <Checkbox
                         toggle
-                        label={APP_STEPS.CSV.PSEDUO[language]}
                         disabled={loading || transactionId !== ''}
+                        label={APP_STEPS.OPERATION.CSV.PSEDUO[language]}
                       />
                     </Table.Cell>
                   )}
