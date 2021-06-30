@@ -62,7 +62,7 @@ function AppSettings ({ open, setOpen }) {
               <Icon name="check" color="green" /> : null
             }
           />
-          {process.env.NODE_ENV === 'development' &&
+          {['development', 'test'].includes(process.env.NODE_ENV) &&
           <Form.TextArea
             rows={6}
             placeholder="Just paste token and close settings"

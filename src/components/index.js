@@ -1,6 +1,7 @@
 export { default as AppCopy } from './steps/AppCopy'
 export { default as AppDoOperation } from './steps/AppDoOperation'
 export { default as AppSelectOperation } from './steps/AppSelectOperation'
+export { default as AppMagicMode } from './steps/AppMagicMode'
 export { default as AppStatus } from './steps/AppStatus'
 export { default as AppMenu } from './AppMenu'
 export { default as AppSettings } from './AppSettings'

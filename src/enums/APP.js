@@ -166,5 +166,19 @@ export const APP_STEPS = {
         nb: 'Ja'
       }
     }
+  },
+  MAGIC: {
+    HEADER: {
+      en: 'Enter full file path and select operation',
+      nb: 'Skriv inn full filsti og velg operasjon'
+    },
+    PLACEHOLDER: {
+      en: 'A valid path with filename, like \'/ssb/stamme01/data.csv\'',
+      nb: 'En gyldig sti med filnavn, som \'/ssb/stamme01/data.csv\''
+    },
+    WAIT_FOR_COPY: {
+      en: (command, fullPath) => `Copying has started, you can either wait for it and you will be redirected to '${command}' for '${fullPath}' or log off and check the status later.`,
+      nb: (command, fullPath) => `Kopiering er satt i gang, du kan enten vente til den er ferdig og du vil bli sendt til '${command}' for '${fullPath}' eller logge av og sjekke statusen senere.`
+    }
   }
 }
