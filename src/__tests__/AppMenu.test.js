@@ -6,12 +6,15 @@ import { LANGUAGE } from '@statisticsnorway/dapla-js-utilities'
 import { AppMenu } from '../components'
 import { AppContextProvider } from '../context/AppContext'
 import { TEST_CONFIGURATIONS } from '../configurations'
-import { UI } from '../enums'
+import { TEST_IDS, UI } from '../enums'
+
+window.localStorage.__proto__.getItem = jest.fn()
+window.localStorage.__proto__.setItem = jest.fn()
 
 const { language, otherLanguage } = TEST_CONFIGURATIONS
 
 const setup = () => {
-  const { getByText } = render(
+  const { getByText, getByTestId } = render(
     <AppContextProvider>
       <MemoryRouter initialEntries={['/']}>
         <AppMenu setSettingsOpen={jest.fn()} />
@@ -19,7 +22,7 @@ const setup = () => {
     </AppContextProvider>
   )
 
-  return { getByText }
+  return { getByText, getByTestId }
 }
 
 test('Renders correctly', () => {
@@ -34,4 +37,14 @@ test('Change language works correctly', () => {
   userEvent.click(getByText(LANGUAGE.ENGLISH[language]))
 
   expect(getByText(UI.HEADER[otherLanguage])).toBeInTheDocument()
+})
+
+test('Toggle advanced user mode', () => {
+  const { getByTestId } = setup()
+
+  userEvent.click(getByTestId(TEST_IDS.ADVANCED_USER_TOGGLE))
+
+  expect(getByTestId(TEST_IDS.SETTINGS_BUTTON)).toBeInTheDocument()
+
+  userEvent.click(getByTestId(TEST_IDS.ADVANCED_USER_TOGGLE))
 })

@@ -69,7 +69,8 @@
       "!src/__tests__/test-data/**",
       "!src/components/files/**",
       "!src/components/steps/**",
-      "!src/components/status/**"
+      "!src/components/status/**",
+      "!src/components/magic/**"
     ],
     "coverageThreshold": {
       "global": {

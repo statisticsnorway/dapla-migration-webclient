@@ -7,8 +7,12 @@ import { ApiContext, LanguageContext } from '../context/AppContext'
 import { TEST_CONFIGURATIONS } from '../configurations'
 import { SETTINGS, TEST_IDS } from '../enums'
 
+window.localStorage.__proto__.getItem = jest.fn()
+window.localStorage.__proto__.setItem = jest.fn()
+
 const { alternativeApi, errorString, language } = TEST_CONFIGURATIONS
-const apiContext = TEST_CONFIGURATIONS.apiContext(jest.fn())
+const setDevToken = jest.fn()
+const apiContext = TEST_CONFIGURATIONS.apiContext(jest.fn(), jest.fn(), setDevToken)
 const execute = jest.fn()
 
 const setup = () => {
@@ -64,6 +68,14 @@ describe('Common mock', () => {
     userEvent.click(getByTestId(TEST_IDS.DEFAULT_SETTINGS_VALUES_BUTTON))
 
     expect(getByPlaceholderText(SETTINGS.API[language])).toHaveValue(apiContext.api)
+  })
+
+  test('Paste devToken', async () => {
+    const { getByPlaceholderText } = setup()
+
+    await userEvent.type(getByPlaceholderText('Just paste token and close settings'), 'devToken')
+
+    expect(setDevToken).toHaveBeenCalled()
   })
 })
 
