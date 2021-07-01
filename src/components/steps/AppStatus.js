@@ -9,7 +9,7 @@ import { APP_STEPS } from '../../enums'
 function AppStatus () {
   const { language } = useContext(LanguageContext)
 
-  const [activeIndex, setActiveIndex] = useState(1)
+  const [activeIndex, setActiveIndex] = useState(-1)
 
   return (
     <Accordion fluid styled>
@@ -37,7 +37,7 @@ function AppStatus () {
         {APP_STEPS.STATUS.MY_STATUSES[language]}
       </Accordion.Title>
       <Accordion.Content active={activeIndex === 1}>
-        <MyStatuses />
+        {activeIndex === 1 && <MyStatuses open={activeIndex === 1} />}
       </Accordion.Content>
     </Accordion>
   )

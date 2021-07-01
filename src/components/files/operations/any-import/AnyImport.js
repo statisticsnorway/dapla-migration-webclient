@@ -34,7 +34,7 @@ function AnyImport ({ file }) {
         operationId,
         {
           command: API.OPERATIONS[0],
-          file: file
+          file: [`${file.folder}/${file.filename}`]
         }
       )
     } catch (e) {

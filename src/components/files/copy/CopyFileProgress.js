@@ -6,7 +6,7 @@ import { LanguageContext } from '../../../context/AppContext'
 import { APP } from '../../../configurations'
 import { APP_STEPS } from '../../../enums'
 
-function CopyFileProgress ({ file, readBytes, fileSize }) {
+function CopyFileProgress ({ file, readBytes, fileSize, nextCommand }) {
   const { language } = useContext(LanguageContext)
 
   const [progress, setProgress] = useState(0)
@@ -29,9 +29,25 @@ function CopyFileProgress ({ file, readBytes, fileSize }) {
       {progress === 100 &&
       <>
         <Divider hidden />
-        <Link to={{ pathname: `${APP[1].route}`, state: { file: file } }}>
-          {APP_STEPS.COPY.GO_TO_OPERATION[language]}
-        </Link>
+        {nextCommand !== undefined ?
+          <Link
+            to={{
+              pathname: `${APP[2].route}/${nextCommand}`,
+              state: {
+                file: {
+                  folder: file.substr(0, file.lastIndexOf('/')),
+                  filename: file.substr(file.lastIndexOf('/') + 1, file.length)
+                }
+              }
+            }}
+          >
+            {APP_STEPS.MAGIC.CONTINUE[language]}
+          </Link>
+          :
+          <Link to={{ pathname: `${APP[1].route}`, state: { file: file } }}>
+            {APP_STEPS.COPY.GO_TO_OPERATION[language]}
+          </Link>
+        }
       </>
       }
     </>

@@ -56,9 +56,7 @@ function AppMagicCopyStatus ({ fullPath, fileSize, transactionId, command }) {
       {!loading && error && <ErrorMessage error={error} language={language} />}
       {!loading && statusError && <ErrorMessage error={statusError} language={language} />}
       {!ready && !error && !statusError && <Icon size="large" color="blue" name="sync alternate" loading />}
-      {ready && !error && !statusError && readBytes !== fileSize &&
-      APP_STEPS.MAGIC.WAIT_FOR_COPY[language](command, fullPath)
-      }
+      {ready && !error && !statusError && readBytes !== fileSize && APP_STEPS.MAGIC.WAIT_FOR_COPY[language]}
       {ready && !error && !statusError && readBytes !== fileSize &&
       <AppMagicCopyProgress fileSize={fileSize} readBytes={readBytes} />
       }

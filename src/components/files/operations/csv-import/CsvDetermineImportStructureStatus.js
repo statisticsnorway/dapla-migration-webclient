@@ -44,7 +44,15 @@ function CsvDetermineImportStructureStatus ({ file, fileData, transactionId }) {
 
   return (
     <>
-      {!ready && !error && !statusError && <Icon color="blue" size="big" name="sync alternate" loading />}
+      {!ready && !error && !statusError &&
+      <Icon
+        loading
+        size="big"
+        color="blue"
+        name="sync alternate"
+        style={{ marginBottom: '0.5rem' }}
+      />
+      }
       {ready && !error && !statusError && <CsvImport file={file} data={data.result.template} fileData={fileData} />}
       {!loading && error && <ErrorMessage error={error} language={language} />}
       {!loading && statusError && <ErrorMessage error={statusError} language={language} />}

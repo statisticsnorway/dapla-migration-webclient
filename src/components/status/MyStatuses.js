@@ -1,23 +1,48 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Confirm, Grid, Icon, List } from 'semantic-ui-react'
 
+import MigrationStatus from './MigrationStatus'
 import { LanguageContext } from '../../context/AppContext'
 import { APP_STEPS } from '../../enums'
 
-function MyStatuses () {
+function MyStatuses ({ open }) {
   const { language } = useContext(LanguageContext)
 
+  const [check, setCheck] = useState(false)
+  const [statuses, setStatuses] = useState(
+    localStorage.getItem('statuses') !== null ? localStorage.getItem('statuses').split(',') : []
+  )
   const [confirmOpen, setConfirmOpen] = useState(false)
 
   const handleResetLocalStorage = () => {
-    const statuses = localStorage.getItem('statuses').split(',')
+    const lsStatuses = localStorage.getItem('statuses').split(',')
 
-    statuses.forEach(status => {
+    lsStatuses.forEach(status => {
       localStorage.removeItem(status)
     })
 
     localStorage.removeItem('statuses')
+
+    setStatuses([])
   }
+
+  useEffect(() => {
+    if (open) {
+      if (localStorage.getItem('statuses') !== null) {
+        setStatuses(localStorage.getItem('statuses').split(','))
+      } else {
+        setStatuses([])
+      }
+    }
+  }, [open])
+
+  useEffect(() => {
+    if (localStorage.getItem('statuses') !== null) {
+      setStatuses(localStorage.getItem('statuses').split(','))
+    } else {
+      setStatuses([])
+    }
+  }, [check])
 
   return (
     <>
@@ -25,18 +50,18 @@ function MyStatuses () {
         <Grid.Row>
           <Grid.Column>
             <List>
-              {localStorage.getItem('statuses') !== null &&
-              localStorage.getItem('statuses').split(',').map(status =>
-                <List.Item key={status}>{status} - {localStorage.getItem(status)}</List.Item>
-              )
-              }
+              {statuses.length !== 0 && statuses.map(statusId =>
+                <List.Item key={statusId}>
+                  <MigrationStatus statusId={statusId} check={check} setCheck={setCheck} />
+                </List.Item>
+              )}
             </List>
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
           <Grid.Column textAlign="right">
-            {localStorage.getItem('statuses') !== null &&
-            <Icon link name="trash alternate outline" color="red" onClick={() => setConfirmOpen(true)} />
+            {statuses.length !== 0 &&
+            <Icon link size="large" name="trash alternate outline" color="red" onClick={() => setConfirmOpen(true)} />
             }
           </Grid.Column>
         </Grid.Row>

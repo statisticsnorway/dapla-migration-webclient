@@ -34,7 +34,8 @@ function AppMagicCopy ({ fullPath, fileSize, command }) {
         {
           command: 'copy',
           file: fullPath,
-          fileSize: fileSize
+          fileSize: fileSize,
+          nextCommand: command
         }
       )
     } catch (e) {
