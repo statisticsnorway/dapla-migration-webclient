@@ -17,9 +17,7 @@ export const AppContextProvider = (props) => {
     localStorage.getItem('advancedUser') !== null ?
       localStorage.getItem('advancedUser') === 'true' ? true
         :
-        localStorage.getItem('advancedUser') === 'false' ? false
-          :
-          false
+        localStorage.getItem('advancedUser') !== 'false'
       :
       false
   )
