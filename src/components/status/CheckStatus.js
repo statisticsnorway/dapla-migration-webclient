@@ -26,31 +26,53 @@ function CheckStatus () {
     }
   }, [statusId, ready])
 
-  const handleAddToMyStatuses = () => {
+  const handleAddToMyStatuses = async () => {
     const command = getNestedObject(data, ['command', 'cmd'])
-    const info = {
-      command: command
-    }
+    const info = { command: command }
+    let addToMyStatuses = true
 
     if (command !== undefined) {
       switch (command) {
         case API.OPERATIONS[0]:
-        case API.OPERATIONS[1]:
           info.file = getNestedObject(data, ['command', 'args', 'template', 'files'])
           break
 
+        case API.OPERATIONS[1]:
+          info.file = getNestedObject(data, ['command', 'args', 'template', 'files'])
+          info.convertAfterImport = getNestedObject(data, ['command', 'convertAfterImport'])
+          break
+
         case 'copy':
-          info.file = getNestedObject(data, ['command', 'args', 'path'])
+          const path = getNestedObject(data, ['command', 'args', 'path'])
+          const actualPath = path.substr(0, path.lastIndexOf('/'))
+          const file = path.substr(path.lastIndexOf('/') + 1, path.length)
+
+          info.file = path
+
+          await executeGet(
+            { url: `${window.__ENV.REACT_APP_API}/${API.AGENTS.SAS_AGENT}${API.FOLDER}${actualPath}` }
+          ).then(res => {
+            if (res.data.files.length > 0) {
+              const findFile = res.data.files.filter(element => element.filename === file)
+              info.fileSize = findFile[0].size
+            }
+          })
           break
 
         default:
-          info.file = ''
+          addToMyStatuses = false
           break
       }
     }
 
-    LOCAL_STORAGE(statusId, info)
-    setAlreadyInMyStatuses(true)
+    if (addToMyStatuses) {
+      LOCAL_STORAGE(statusId, info)
+      setAlreadyInMyStatuses(true)
+      setStatusId('')
+      setReady(false)
+    } else {
+      console.log(`${statusId} cannot be added to your statuses because the command '${command}' is not trackable`)
+    }
   }
 
   return (
@@ -99,9 +121,9 @@ function CheckStatus () {
               <Icon
                 link
                 bordered
-                name="plus"
                 size="large"
-                color="green"
+                color={loading ? 'blue' : 'green'}
+                name={loading ? 'spinner' : 'plus'}
                 onClick={() => handleAddToMyStatuses()}
               />
             }

@@ -5,8 +5,9 @@ import { ErrorMessage, getNestedObject } from '@statisticsnorway/dapla-js-utilit
 
 import { LanguageContext } from '../../../../context/AppContext'
 import { API } from '../../../../configurations'
+import { APP_STEPS } from '../../../../enums'
 
-function CsvImportStatus ({ file, transactionId, convertAfterImport }) {
+function CsvImportStatus ({ file, transactionId, convertAfterImport, isCompleted = false, isCompleteData }) {
   const { language } = useContext(LanguageContext)
 
   const [ready, setReady] = useState(false)
@@ -20,35 +21,41 @@ function CsvImportStatus ({ file, transactionId, convertAfterImport }) {
   )
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      checkStatus().then()
-    }, 5000)
+    if (!isCompleted) {
+      const interval = setInterval(() => {
+        checkStatus().then()
+      }, 5000)
 
-    const checkStatus = async () => {
-      await refetch().then(res => {
-        if (res.data.state.status === API.STATUS.COMPLETED) {
-          setReady(true)
-          setState(null)
-          setStatus(null)
-          clearInterval(interval)
-        }
+      const checkStatus = async () => {
+        await refetch().then(res => {
+          if (res.data.state.status === API.STATUS.COMPLETED) {
+            setReady(true)
+            setState(null)
+            setStatus(null)
+            clearInterval(interval)
+          }
 
-        if (res.data.state.status === API.STATUS.IN_PROGRESS) {
-          setState(res.data.state)
-          setStatus(res.data.result.status)
-        }
+          if (res.data.state.status === API.STATUS.IN_PROGRESS) {
+            setState(res.data.state)
+            setStatus(res.data.result.status)
+          }
 
-        if (res.data.state.status === API.STATUS.ERROR) {
-          setReady(true)
-          setState(null)
-          setStatus(null)
-          setStatusError(getNestedObject(res, API.ERROR_PATH))
-          clearInterval(interval)
-        }
-      })
+          if (res.data.state.status === API.STATUS.ERROR) {
+            setReady(true)
+            setState(null)
+            setStatus(null)
+            setStatusError(getNestedObject(res, API.ERROR_PATH))
+            clearInterval(interval)
+          }
+        })
+      }
+
+      return () => clearInterval(interval)
+    } else {
+      setReady(true)
+      setState(isCompleteData.state)
+      setStatus(isCompleteData.result.status)
     }
-
-    return () => clearInterval(interval)
     // eslint-disable-next-line
   }, [])
 
@@ -60,25 +67,28 @@ function CsvImportStatus ({ file, transactionId, convertAfterImport }) {
         success={ready && !error && !statusError}
         indicating={!ready && !error && !statusError}
         percent={ready ? error || statusError ? 0 : 100 : 0}
-      />
+      >
+        {!ready && !error && !statusError && APP_STEPS.OPERATION.IMPORT.IMPORTING[language]}
+        {ready && !error && !statusError && APP_STEPS.OPERATION.IMPORT.IMPORT_COMPLETE[language]}
+      </Progress>
       {!ready && state !== null && <p>{JSON.stringify(state, null, 2)}</p>}
       {!ready && status !== null && <p>{JSON.stringify(status, null, 2)}</p>}
       {ready && !loading && !error &&
       <>
-        {`Start time: ${data.state.startTime}`}
+        {`Start time: ${isCompleted ? isCompleteData.state.startTime : data.state.startTime}`}
         <br />
-        {`Completed: ${data.state.timestamp}`}
+        {`Completed: ${isCompleted ? isCompleteData.state.timestamp : data.state.timestamp}`}
         <br />
-        {`Status: ${data.state.status} `}
+        {`Status: ${isCompleted ? isCompleteData.state.status : data.state.status} `}
         <Icon color="green" name="check" />
         <Divider hidden />
-        {JSON.stringify(data.result.status, null, 2)}
+        {JSON.stringify(isCompleted ? isCompleteData.result.status : data.result.status, null, 2)}
         <Divider hidden />
         File can be found in bucket
         {convertAfterImport ?
-          <b>{` gs://ssb-data-prod-kilde-migration/kilde/migration${file.folder}/< timestamp >/${file.filename}`}</b>
+          <b>{` gs://ssb-data-prod-kilde-migration/kilde/migration${file.folder}/< filename >/< timestamp >/${file.filename}`}</b>
           :
-          <b>{` gs://ssb-rawdata-prod-migration/kilde/migration${file.folder}/< timestamp >/${file.filename}`}</b>
+          <b>{` gs://ssb-rawdata-prod-migration/kilde/migration${file.folder}/< filename >/< timestamp >/${file.filename}`}</b>
         }
       </>
       }

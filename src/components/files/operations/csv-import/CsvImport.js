@@ -47,7 +47,8 @@ function CsvImport ({ file, data, fileData }) {
         operationId,
         {
           command: API.OPERATIONS[1],
-          file: data.files
+          file: data.files,
+          convertAfterImport: convertAfterImport
         }
       )
     } catch (e) {

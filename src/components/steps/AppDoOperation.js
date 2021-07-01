@@ -15,7 +15,7 @@ function AppDoOperation () {
         size="large"
         icon="file code"
         subheader={location.state.file.folder}
-        content={location.state.file.filename}
+        content={`${location.state.file.filename} (${operation.operation})`}
       />
       {operation.operation === API.OPERATIONS[0] &&
       <>

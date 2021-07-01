@@ -70,7 +70,7 @@ function AppMagicMode () {
           </Button.Group>
           }
         </Grid.Column>
-        <Grid.Column>
+        <Grid.Column verticalAlign="middle">
           {ready && <AppMagicInit fullPath={fullPath} command={command} />}
         </Grid.Column>
       </Grid>

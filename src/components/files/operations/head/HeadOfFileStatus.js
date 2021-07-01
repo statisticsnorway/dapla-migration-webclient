@@ -11,7 +11,7 @@ import { API } from '../../../../configurations'
 function HeadOfFileStatus ({ file, transactionId, operation }) {
   const { language } = useContext(LanguageContext)
 
-  const [ready, setReady] = useState(false)
+  const [data, setData] = useState(false)
   const [statusError, setStatusError] = useState(null)
 
   const [{ loading, error }, refetch] = useAxios(
@@ -27,12 +27,12 @@ function HeadOfFileStatus ({ file, transactionId, operation }) {
     const checkStatus = async () => {
       await refetch().then(res => {
         if (res.data.state.status === API.STATUS.COMPLETED) {
-          setReady(true)
+          setData(res.data.result)
           clearInterval(interval)
         }
 
         if (res.data.state.status === API.STATUS.ERROR) {
-          setReady(true)
+          setData(false)
           setStatusError(getNestedObject(res, API.ERROR_PATH))
           clearInterval(interval)
         }
@@ -45,9 +45,11 @@ function HeadOfFileStatus ({ file, transactionId, operation }) {
 
   return (
     <>
-      {!ready && !error && !statusError && <Icon color="blue" size="big" name="sync alternate" loading />}
-      {ready && !error && !statusError && operation === API.OPERATIONS[1] && <CsvHeadOfFileContent file={file} />}
-      {ready && !error && !statusError && operation !== API.OPERATIONS[1] && <HeadOfFileContent file={file} />}
+      {!data && !error && !statusError && <Icon color="blue" size="big" name="sync alternate" loading />}
+      {data && !error && !statusError && operation !== API.OPERATIONS[1] && <HeadOfFileContent data={data} />}
+      {data && !error && !statusError && operation === API.OPERATIONS[1] &&
+      <CsvHeadOfFileContent file={file} data={data} />
+      }
       {!loading && error && <ErrorMessage error={error} language={language} />}
       {!loading && statusError && <ErrorMessage error={statusError} language={language} />}
     </>
