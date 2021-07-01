@@ -15,11 +15,7 @@ export const AppContextProvider = (props) => {
   const [devToken, setDevToken] = useState(localStorage.getItem('devToken') || '')
   const [advancedUser, setAdvancedUser] = useState(
     localStorage.getItem('advancedUser') !== null ?
-      localStorage.getItem('advancedUser') === 'true' ? true
-        :
-        localStorage.getItem('advancedUser') !== 'false'
-      :
-      false
+      localStorage.getItem('advancedUser') === 'true' : false
   )
 
   return (
