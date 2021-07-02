@@ -58,7 +58,7 @@ function AppMagicMode () {
                   <Button
                     key={command}
                     content={command}
-                    disabled={fileExtension === ''}
+                    disabled={ready || fileExtension === ''}
                     onClick={() => {
                       setCommand(command)
                       setReady(true)
@@ -70,7 +70,7 @@ function AppMagicMode () {
           </Button.Group>
           }
         </Grid.Column>
-        <Grid.Column verticalAlign="middle">
+        <Grid.Column>
           {ready && <AppMagicInit fullPath={fullPath} command={command} />}
         </Grid.Column>
       </Grid>

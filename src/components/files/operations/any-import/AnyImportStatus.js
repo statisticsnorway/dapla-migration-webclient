@@ -4,7 +4,7 @@ import { Divider, Icon, Progress } from 'semantic-ui-react'
 import { ErrorMessage, getNestedObject } from '@statisticsnorway/dapla-js-utilities'
 
 import { LanguageContext } from '../../../../context/AppContext'
-import { API } from '../../../../configurations'
+import { API, FILE } from '../../../../configurations'
 import { APP_STEPS } from '../../../../enums'
 
 function AnyImportStatus ({ file, transactionId, isCompleted = false, isCompleteData }) {
@@ -85,8 +85,14 @@ function AnyImportStatus ({ file, transactionId, isCompleted = false, isComplete
         <Divider hidden />
         {JSON.stringify(isCompleted ? isCompleteData.result.status : data.result.status, null, 2)}
         <Divider hidden />
-        File can be found in bucket
-        <b>{` gs://ssb-data-prod-kilde-ssb-onprem-copy/user/< username >${file.folder}/< filename >/< timestamp >/${file.filename}`}</b>
+        {APP_STEPS.OPERATION.IMPORT.FOUND_IN_BUCKET[language]}
+        <b>
+          {FILE.createBucketString(
+            'gs://ssb-data-prod-kilde-ssb-onprem-copy/user/< username >',
+            file,
+            isCompleted ? isCompleteData.state.timestamp : data.state.timestamp
+          )}
+        </b>
       </>
       }
       {!loading && error && <ErrorMessage error={error} language={language} />}

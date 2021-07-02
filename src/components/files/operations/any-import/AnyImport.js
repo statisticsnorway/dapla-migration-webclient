@@ -1,5 +1,5 @@
 import useAxios from 'axios-hooks'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Button, Container, Divider, Icon } from 'semantic-ui-react'
 import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
@@ -9,7 +9,7 @@ import { ApiContext, LanguageContext } from '../../../../context/AppContext'
 import { API, API_INSTRUCTIONS, LOCAL_STORAGE } from '../../../../configurations'
 import { APP_STEPS } from '../../../../enums'
 
-function AnyImport ({ file }) {
+function AnyImport ({ file, trigger }) {
   const { devToken } = useContext(ApiContext)
   const { language } = useContext(LanguageContext)
 
@@ -41,6 +41,13 @@ function AnyImport ({ file }) {
       console.log(e)
     }
   }
+
+  useEffect(() => {
+    if (trigger) {
+      initiateFileImport().then()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Container textAlign="center">

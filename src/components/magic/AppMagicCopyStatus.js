@@ -69,7 +69,8 @@ function AppMagicCopyStatus ({ fullPath, fileSize, transactionId, command }) {
             file: {
               folder: fullPath.substr(0, fullPath.lastIndexOf('/')),
               filename: fullPath.substr(fullPath.lastIndexOf('/') + 1, fullPath.length)
-            }
+            },
+            trigger: true
           }
         }}
       />

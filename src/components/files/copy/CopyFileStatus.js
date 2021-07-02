@@ -12,6 +12,7 @@ function CopyFileStatus ({ file, fileSize, transactionId, nextCommand, isComplet
   const { language } = useContext(LanguageContext)
 
   const [ready, setReady] = useState(false)
+  const [started, setStarted] = useState('')
   const [readBytes, setReadBytes] = useState(0)
   const [statusError, setStatusError] = useState(null)
 
@@ -28,19 +29,21 @@ function CopyFileStatus ({ file, fileSize, transactionId, nextCommand, isComplet
 
       const checkStatus = async () => {
         await refetch().then(res => {
+          const startedDateTime = new Date(res.data.state.startTime)
+
+          setReady(true)
+          setStarted(startedDateTime.toLocaleTimeString())
+
           if (res.data.state.status === API.STATUS.COMPLETED) {
-            setReady(true)
             setReadBytes(getNestedObject(res, API.READ_BYTES_PATH))
             clearInterval(interval)
           }
 
           if (res.data.state.status === API.STATUS.IN_PROGRESS) {
-            setReady(true)
             setReadBytes(getNestedObject(res, API.READ_BYTES_PATH))
           }
 
           if (res.data.state.status === API.STATUS.ERROR) {
-            setReady(true)
             setStatusError(getNestedObject(res, API.ERROR_PATH))
             clearInterval(interval)
           }
@@ -58,7 +61,12 @@ function CopyFileStatus ({ file, fileSize, transactionId, nextCommand, isComplet
   return (
     <>
       {!ready && !error && !statusError && <Icon color="blue" name="sync alternate" loading />}
-      {ready && !error && !statusError && readBytes !== fileSize && APP_STEPS.COPY.COPY_INITIATED[language]}
+      {ready && !error && !statusError && readBytes !== fileSize &&
+      <>
+        `${APP_STEPS.COPY.COPY_INITIATED[language]} `
+        <b>{started}</b>
+      </>
+      }
       {ready && !error && !statusError &&
       <CopyFileProgress file={file} readBytes={readBytes} fileSize={fileSize} nextCommand={nextCommand} />
       }
