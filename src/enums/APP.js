@@ -59,8 +59,8 @@ export const APP_STEPS = {
       nb: 'Start kopiering'
     },
     COPY_INITIATED: {
-      en: 'Copy initiated ...',
-      nb: 'Kopiering startet ...'
+      en: 'Copy initiated',
+      nb: 'Kopiering startet'
     },
     COPYING: {
       en: 'Copying file ...',
@@ -140,6 +140,14 @@ export const APP_STEPS = {
       IMPORT_COMPLETE: {
         en: 'Import done!',
         nb: 'Importering ferdig!'
+      },
+      FOUND_IN_BUCKET: {
+        en: 'File can be found in bucket',
+        nb: 'Filen finner du i bøtte'
+      },
+      AFTER_CONVERSION: {
+        en: 'after conversion is complete',
+        nb: 'etter konvertering er ferdig'
       }
     }
   },
@@ -189,8 +197,8 @@ export const APP_STEPS = {
       nb: 'En gyldig sti med filnavn, som \'/ssb/stamme01/data.csv\''
     },
     WAIT_FOR_COPY: {
-      en: 'You will be redirected when the copy process completes if you wait, but status has been saved and can be tracked later if you leave',
-      nb: 'Du vil bli videresendt når kopieringen er ferdig hvis du venter, men statusen er lagret og kan alltid sjekkes senere hvis du avslutter'
+      en: 'You will be redirected when the copy process completes if you wait, but status has been saved and can be tracked later if you leave.',
+      nb: 'Du vil bli videresendt når kopieringen er ferdig hvis du venter, men statusen er lagret og kan alltid sjekkes senere hvis du avslutter.'
     },
     CONTINUE: {
       en: 'Move forward ...',

@@ -4,7 +4,7 @@ import { Divider, Icon, Progress } from 'semantic-ui-react'
 import { ErrorMessage, getNestedObject } from '@statisticsnorway/dapla-js-utilities'
 
 import { LanguageContext } from '../../../../context/AppContext'
-import { API } from '../../../../configurations'
+import { API, FILE } from '../../../../configurations'
 import { APP_STEPS } from '../../../../enums'
 
 function CsvImportStatus ({ file, transactionId, convertAfterImport, isCompleted = false, isCompleteData }) {
@@ -84,12 +84,23 @@ function CsvImportStatus ({ file, transactionId, convertAfterImport, isCompleted
         <Divider hidden />
         {JSON.stringify(isCompleted ? isCompleteData.result.status : data.result.status, null, 2)}
         <Divider hidden />
-        File can be found in bucket
-        {convertAfterImport ?
-          <b>{` gs://ssb-data-prod-kilde-migration/kilde/migration${file.folder}/< filename >/< timestamp >/${file.filename}`}</b>
-          :
-          <b>{` gs://ssb-rawdata-prod-migration/kilde/migration${file.folder}/< filename >/< timestamp >/${file.filename}`}</b>
-        }
+        {APP_STEPS.OPERATION.IMPORT.FOUND_IN_BUCKET[language]}
+        <b>
+          {convertAfterImport ?
+            FILE.createBucketString(
+              'gs://ssb-data-prod-kilde-migration/kilde/migration',
+              file,
+              isCompleted ? isCompleteData.state.startTime : data.state.startTime
+            )
+            :
+            FILE.createBucketString(
+              'gs://ssb-rawdata-prod-migration/kilde/migration',
+              file,
+              isCompleted ? isCompleteData.state.startTime : data.state.startTime
+            )
+          }
+        </b>
+        {convertAfterImport && ` ${APP_STEPS.OPERATION.IMPORT.AFTER_CONVERSION[language]}`}
       </>
       }
       {!loading && error && <ErrorMessage error={error} language={language} />}

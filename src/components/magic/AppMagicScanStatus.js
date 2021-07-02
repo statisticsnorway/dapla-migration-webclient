@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { Icon } from 'semantic-ui-react'
 import { ErrorMessage, getNestedObject } from '@statisticsnorway/dapla-js-utilities'
 
-import AppMagicInit from './AppMagicInit'
+import AppMagicCopy from './AppMagicCopy'
 import { LanguageContext } from '../../context/AppContext'
 import { API } from '../../configurations'
 
@@ -11,6 +11,7 @@ function AppMagicScanStatus ({ transactionId, fullPath, command }) {
   const { language } = useContext(LanguageContext)
 
   const [ready, setReady] = useState(false)
+  const [fileSize, setFileSize] = useState(0)
   const [statusError, setStatusError] = useState(null)
 
   const [{ loading, error }, refetch] = useAxios(
@@ -26,6 +27,10 @@ function AppMagicScanStatus ({ transactionId, fullPath, command }) {
     const checkStatus = async () => {
       await refetch().then(res => {
         if (res.data.state.status === API.STATUS.COMPLETED) {
+          const file = fullPath.substr(fullPath.lastIndexOf('/') + 1, fullPath.length)
+          const findFile = res.data.result.files.filter(element => element.filename === file)
+
+          setFileSize(findFile[0].size)
           setReady(true)
           clearInterval(interval)
         }
@@ -51,7 +56,7 @@ function AppMagicScanStatus ({ transactionId, fullPath, command }) {
       {!loading && error && <ErrorMessage error={error} language={language} />}
       {!loading && statusError && <ErrorMessage error={statusError} language={language} />}
       {!ready && !error && !statusError && <Icon size="large" color="blue" name="sync alternate" loading />}
-      {ready && !error && !statusError && <AppMagicInit fullPath={fullPath} command={command} />}
+      {ready && !error && !statusError && <AppMagicCopy fullPath={fullPath} fileSize={fileSize} command={command} />}
     </>
   )
 }

@@ -23,7 +23,7 @@ function AppDoOperation () {
         <Divider hidden />
       </>
       }
-      <AppForwardOperation operation={operation} file={location.state.file} />
+      <AppForwardOperation operation={operation} file={location.state.file} trigger={location.state.trigger} />
     </>
   )
 }

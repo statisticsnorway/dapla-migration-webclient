@@ -33,7 +33,7 @@ function SelectFileOperation ({ file }) {
                   pathname: `${APP[2].route}/${command}`,
                   state: {
                     file: file,
-                    command: command
+                    trigger: false
                   }
                 }}
               />
