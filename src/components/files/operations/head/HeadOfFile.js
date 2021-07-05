@@ -46,8 +46,8 @@ function HeadOfFile ({ file, operation }) {
           value={linesToShow}
           options={API.LINES_TO_SHOW_OPTIONS(9)}
           label={APP_STEPS.HEAD.LINES_TO_SHOW[language]}
+          onChange={(e, { value }) => setLinesToShow(value)}
           placeholder={APP_STEPS.HEAD.LINES_TO_SHOW[language]}
-          onChange={(e, { value }) => {setLinesToShow(value)}}
         />
       </Form>
       <Divider hidden />

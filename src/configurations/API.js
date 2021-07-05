@@ -193,7 +193,7 @@ export const API_INSTRUCTIONS = {
     },
     'state': {}
   }),
-  CSV_IMPORT: (id, files, delimiter, charset, columns, boundaryType, valuation, convertAfterImport, converterSkipOnFailure) => ({
+  CSV_IMPORT: (id, files, delimiter, charset, columns, boundaryType, valuation, convertAfterImport, converterSkipOnFailure, pseudoRules) => ({
     'id': id,
     'command': {
       'target': 'agent',
@@ -212,7 +212,8 @@ export const API_INSTRUCTIONS = {
           'metadata': {
             'boundaryType': boundaryType,
             'valuation': valuation
-          }
+          },
+          'pseudoRules': pseudoRules
         },
         'convertAfterImport': convertAfterImport,
         'converterSkipOnFailure': converterSkipOnFailure

@@ -2,8 +2,8 @@ import AceEditor from 'react-ace'
 import { useContext, useEffect, useState } from 'react'
 import { Divider, Form } from 'semantic-ui-react'
 
-import 'ace-builds/src-noconflict/mode-javascript'
-import 'ace-builds/src-noconflict/theme-github'
+import 'ace-builds/src-noconflict/mode-json'
+import 'ace-builds/src-noconflict/theme-xcode'
 
 import CsvDetermineImportStructure from './CsvDetermineImportStructure'
 import { LanguageContext } from '../../../../context/AppContext'
@@ -16,6 +16,7 @@ function CsvHeadOfFileContent ({ file, data }) {
   const { editorWidth } = useWindowSize()
 
   const [fileData, setFileData] = useState('')
+  const [initiated, setInitiated] = useState(false)
   const [stringValue, setStringValue] = useState('')
   const [charset, setCharset] = useState(API.ENCODE_OPTIONS[0].value)
   const [delimiter, setDelimiter] = useState(API.DELIMITER_OPTIONS[1].value)
@@ -39,20 +40,21 @@ function CsvHeadOfFileContent ({ file, data }) {
         <Form.Select
           inline
           value={charset}
+          disabled={initiated}
           options={API.ENCODE_OPTIONS}
           label={APP_STEPS.HEAD.CHARSET[language]}
           placeholder={APP_STEPS.HEAD.CHARSET[language]}
-          onChange={(e, { value }) => {setCharset(value)}}
+          onChange={(e, { value }) => setCharset(value)}
         />
         <AceEditor
+          mode="json"
+          theme="xcode"
           fontSize={14}
           height="250px"
-          theme="github"
           readOnly={true}
-          mode="javascript"
           value={stringValue}
           showPrintMargin={false}
-          name="UNIQUE_ID_OF_DIV"
+          name="UNIQUE_ID_OF_DIV_CSV_HEAD"
           width={`${editorWidth.toString()}px`}
           editorProps={{ $blockScrolling: true }}
         />
@@ -60,14 +62,21 @@ function CsvHeadOfFileContent ({ file, data }) {
         <Form.Select
           inline
           value={delimiter}
+          disabled={initiated}
           options={API.DELIMITER_OPTIONS}
           label={APP_STEPS.HEAD.DELIMITER[language]}
           placeholder={APP_STEPS.HEAD.DELIMITER[language]}
-          onChange={(e, { value }) => {setDelimiter(value)}}
+          onChange={(e, { value }) => setDelimiter(value)}
         />
       </Form>
       <Divider hidden />
-      <CsvDetermineImportStructure file={file} fileData={fileData} charset={charset} delimiter={delimiter} />
+      <CsvDetermineImportStructure
+        file={file}
+        charset={charset}
+        fileData={fileData}
+        delimiter={delimiter}
+        setInitiated={setInitiated}
+      />
     </>
   )
 }

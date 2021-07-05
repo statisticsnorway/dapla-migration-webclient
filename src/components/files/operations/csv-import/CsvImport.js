@@ -3,6 +3,7 @@ import { useContext, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Button, Checkbox, Divider, Dropdown, Form, Grid, Header, Icon, Input, Segment, Table } from 'semantic-ui-react'
 
+import CsvImportEdit from './CsvImportEdit'
 import CsvImportStatus from './CsvImportStatus'
 import { ApiContext, LanguageContext } from '../../../../context/AppContext'
 import { API, API_INSTRUCTIONS, LOCAL_STORAGE } from '../../../../configurations'
@@ -12,11 +13,14 @@ function CsvImport ({ file, data, fileData }) {
   const { devToken } = useContext(ApiContext)
   const { language } = useContext(LanguageContext)
 
+  const [pseduoRules, setPseudoRules] = useState([])
+  const [instructions, setInstructions] = useState('')
   const [transactionId, setTransactionId] = useState('')
   const [valuation, setValuation] = useState(data.metadata.valuation)
-  const [columns, setColumns] = useState(data.structure.schema.columns)
+  const [checkJsonFirst, setCheckJsonFirst] = useState(false)
   const [convertAfterImport, setConvertAfterImport] = useState(false)
   const [converterSkipOnFailure, setConverterSkipOnFailure] = useState(false)
+  const [columns, setColumns] = useState(JSON.parse(JSON.stringify(data.structure.schema.columns)))
 
   const [{ loading }, executePut] = useAxios({ method: 'PUT' }, { manual: true, useCache: false })
 
@@ -32,7 +36,8 @@ function CsvImport ({ file, data, fileData }) {
         data.metadata.boundaryType,
         valuation,
         convertAfterImport,
-        converterSkipOnFailure
+        converterSkipOnFailure,
+        pseduoRules
       )
 
       await executePut(API.HANDLE_PUT(
@@ -56,6 +61,24 @@ function CsvImport ({ file, data, fileData }) {
     }
   }
 
+  const generateFileImportJson = () => {
+    const operationId = uuidv4()
+
+    setInstructions(JSON.stringify(API_INSTRUCTIONS.CSV_IMPORT(
+      operationId,
+      data.files,
+      data.structure.schema.delimiter,
+      data.structure.schema.charset,
+      columns,
+      data.metadata.boundaryType,
+      valuation,
+      convertAfterImport,
+      converterSkipOnFailure,
+      pseduoRules
+    ), null, 2))
+    setTransactionId(operationId)
+  }
+
   const handleSetColumns = (index, value, property) => {
     setColumns(columns.map((column, i) => {
       if (i === index) {
@@ -70,6 +93,35 @@ function CsvImport ({ file, data, fileData }) {
     }))
   }
 
+  const handlePseudoChange = (checked, name, column) => {
+    if (checked) {
+      console.log(checked)
+      const existsInCurrent = pseduoRules.filter(rule => rule.name === `${name}-rule`)
+      console.log(existsInCurrent)
+      const pseudoRule = ({
+        name: `${name}-rule`,
+        pattern: `**/${column.name}`,
+        func: `fpe-${
+          [API.AVRO_TYPE_OPTIONS[1].value, API.AVRO_TYPE_OPTIONS[4].value].includes(column.type) ? 'digits' : 'anychar'
+        }(migrationsecret)`
+      })
+
+      if (existsInCurrent.length > 0) {
+        setPseudoRules(pseduoRules.map(rule => {
+          if (rule.name === `${column.name}-rule`) {
+            return pseudoRule
+          } else {
+            return rule
+          }
+        }))
+      } else {
+        setPseudoRules(pseduoRules.concat([pseudoRule]))
+      }
+    } else {
+      setPseudoRules(pseduoRules.filter(rule => rule.name !== `${column.name}-rule`))
+    }
+  }
+
   return (
     <Segment basic>
       <Grid columns="equal">
@@ -77,9 +129,9 @@ function CsvImport ({ file, data, fileData }) {
           <Grid.Column>
             <Form size="large">
               <Form.Select
+                disabled
                 options={API.BOUNDARY_OPTIONS}
                 value={data.metadata.boundaryType}
-                disabled={loading || transactionId !== ''}
                 label={APP_STEPS.OPERATION.CSV.BOUNDARY_TYPE[language]}
                 placeholder={APP_STEPS.OPERATION.CSV.BOUNDARY_TYPE[language]}
               >
@@ -150,12 +202,13 @@ function CsvImport ({ file, data, fileData }) {
                   )}
                 </Table.Row>
                 <Table.Row>
-                  {data.structure.schema.columns.map(column =>
+                  {data.structure.schema.columns.map((column, index) =>
                     <Table.Cell key={`${column.name}Pseudo`}>
                       <Checkbox
                         toggle
                         disabled={loading || transactionId !== ''}
                         label={APP_STEPS.OPERATION.CSV.PSEDUO[language]}
+                        onChange={(e, { checked }) => handlePseudoChange(checked, column.name, columns[index])}
                       />
                     </Table.Cell>
                   )}
@@ -165,24 +218,50 @@ function CsvImport ({ file, data, fileData }) {
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
+          <Grid.Column>
+            <Checkbox
+              disabled={instructions !== ''}
+              label={APP_STEPS.OPERATION.CSV.EDIT_JSON[language]}
+              onChange={() => setCheckJsonFirst(!checkJsonFirst)}
+            />
+          </Grid.Column>
           <Grid.Column textAlign="right">
-            <Button
-              primary
-              size="large"
-              onClick={() => initiateFileImport()}
-              disabled={loading || transactionId !== ''}
-            >
-              <Icon name="cloud upload" />
-              {APP_STEPS.OPERATION.IMPORT.INITIATE_IMPORT[language]}
-            </Button>
+            {checkJsonFirst ?
+              <Button
+                primary
+                size="large"
+                disabled={instructions !== ''}
+                onClick={() => generateFileImportJson()}
+              >
+                <Icon name="code" />
+                {APP_STEPS.OPERATION.IMPORT.EDIT_JSON[language]}
+              </Button>
+              :
+              <Button
+                primary
+                size="large"
+                onClick={() => initiateFileImport()}
+                disabled={loading || transactionId !== ''}
+              >
+                <Icon name="cloud upload" />
+                {APP_STEPS.OPERATION.IMPORT.INITIATE_IMPORT[language]}
+              </Button>
+            }
           </Grid.Column>
         </Grid.Row>
-        {transactionId !== '' && !loading &&
+        {!checkJsonFirst && transactionId !== '' && !loading &&
         <Grid.Row>
           <Grid.Column>
             <CsvImportStatus file={file} transactionId={transactionId} convertAfterImport={convertAfterImport} />
           </Grid.Column>
         </Grid.Row>
+        }
+        {checkJsonFirst && instructions !== '' &&
+          <Grid.Row>
+            <Grid.Column>
+              <CsvImportEdit file={file} instructions={instructions} />
+            </Grid.Column>
+          </Grid.Row>
         }
       </Grid>
     </Segment>

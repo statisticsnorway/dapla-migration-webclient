@@ -9,7 +9,7 @@ import { ApiContext, LanguageContext } from '../../../../context/AppContext'
 import { API, API_INSTRUCTIONS } from '../../../../configurations'
 import { APP_STEPS } from '../../../../enums'
 
-function CsvDetermineImportStructure ({ file, fileData, delimiter, charset }) {
+function CsvDetermineImportStructure ({ file, fileData, delimiter, charset, setInitiated }) {
   const { devToken } = useContext(ApiContext)
   const { language } = useContext(LanguageContext)
 
@@ -35,6 +35,7 @@ function CsvDetermineImportStructure ({ file, fileData, delimiter, charset }) {
       ))
 
       setTransactionId(operationId)
+      setInitiated(true)
     } catch (e) {
       console.log(e)
     }

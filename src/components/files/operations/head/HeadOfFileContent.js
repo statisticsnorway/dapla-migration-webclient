@@ -2,8 +2,8 @@ import AceEditor from 'react-ace'
 import { useContext, useEffect, useState } from 'react'
 import { Divider, Form } from 'semantic-ui-react'
 
-import 'ace-builds/src-noconflict/mode-javascript'
-import 'ace-builds/src-noconflict/theme-github'
+import 'ace-builds/src-noconflict/mode-json'
+import 'ace-builds/src-noconflict/theme-xcode'
 
 import { LanguageContext } from '../../../../context/AppContext'
 import { API, useWindowSize } from '../../../../configurations'
@@ -55,7 +55,7 @@ function HeadOfFileContent ({ data }) {
           options={API.ENCODE_OPTIONS}
           label={APP_STEPS.HEAD.CHARSET[language]}
           placeholder={APP_STEPS.HEAD.CHARSET[language]}
-          onChange={(e, { value }) => {setCharset(value)}}
+          onChange={(e, { value }) => setCharset(value)}
         />
       </Form>
       {schemaType !== '' &&
@@ -66,14 +66,14 @@ function HeadOfFileContent ({ data }) {
       }
       <Divider hidden />
       <AceEditor
+        mode="json"
+        theme="xcode"
         fontSize={14}
         height="250px"
-        theme="github"
         readOnly={true}
-        mode="javascript"
         value={stringValue}
         showPrintMargin={false}
-        name="UNIQUE_ID_OF_DIV"
+        name="UNIQUE_ID_OF_DIV_ANY_HEAD"
         width={`${editorWidth.toString()}px`}
         editorProps={{ $blockScrolling: true }}
       />

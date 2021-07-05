@@ -126,6 +126,10 @@ export const APP_STEPS = {
       PSEDUO: {
         en: 'Pseudo?',
         nb: 'Pseudo?'
+      },
+      EDIT_JSON: {
+        en: 'Manually edit JSON before import?',
+        nb: 'Manuelt editere JSON før import?'
       }
     },
     IMPORT: {
@@ -148,6 +152,10 @@ export const APP_STEPS = {
       AFTER_CONVERSION: {
         en: 'after conversion is complete',
         nb: 'etter konvertering er ferdig'
+      },
+      EDIT_JSON: {
+        en: 'Check JSON',
+        nb: 'Sjekk JSON'
       }
     }
   },
