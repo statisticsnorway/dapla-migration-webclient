@@ -63,7 +63,7 @@ function CopyFileStatus ({ file, fileSize, transactionId, nextCommand, isComplet
       {!ready && !error && !statusError && <Icon color="blue" name="sync alternate" loading />}
       {ready && !error && !statusError && readBytes !== fileSize &&
       <>
-        `${APP_STEPS.COPY.COPY_INITIATED[language]} `
+        {`${APP_STEPS.COPY.COPY_INITIATED[language]} `}
         <b>{started}</b>
       </>
       }
