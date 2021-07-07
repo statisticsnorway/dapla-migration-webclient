@@ -13,6 +13,7 @@ function CsvImport ({ file, data, fileData }) {
   const { devToken } = useContext(ApiContext)
   const { language } = useContext(LanguageContext)
 
+  const [quote, setQuote] = useState('')
   const [pseduoRules, setPseudoRules] = useState([])
   const [instructions, setInstructions] = useState('')
   const [transactionId, setTransactionId] = useState('')
@@ -37,7 +38,8 @@ function CsvImport ({ file, data, fileData }) {
         valuation,
         convertAfterImport,
         converterSkipOnFailure,
-        pseduoRules
+        pseduoRules,
+        quote
       )
 
       await executePut(API.HANDLE_PUT(
@@ -74,7 +76,8 @@ function CsvImport ({ file, data, fileData }) {
       valuation,
       convertAfterImport,
       converterSkipOnFailure,
-      pseduoRules
+      pseduoRules,
+      quote
     ), null, 2))
     setTransactionId(operationId)
   }
@@ -95,9 +98,7 @@ function CsvImport ({ file, data, fileData }) {
 
   const handlePseudoChange = (checked, name, column) => {
     if (checked) {
-      console.log(checked)
       const existsInCurrent = pseduoRules.filter(rule => rule.name === `${name}-rule`)
-      console.log(existsInCurrent)
       const pseudoRule = ({
         name: `${name}-rule`,
         pattern: `**/${column.name}`,
@@ -134,8 +135,7 @@ function CsvImport ({ file, data, fileData }) {
                 value={data.metadata.boundaryType}
                 label={APP_STEPS.OPERATION.CSV.BOUNDARY_TYPE[language]}
                 placeholder={APP_STEPS.OPERATION.CSV.BOUNDARY_TYPE[language]}
-              >
-              </Form.Select>
+              />
               <Form.Select
                 value={valuation}
                 options={API.VALUATION_OPTIONS}
@@ -143,8 +143,14 @@ function CsvImport ({ file, data, fileData }) {
                 onChange={(e, { value }) => setValuation(value)}
                 label={APP_STEPS.OPERATION.CSV.VALUATION[language]}
                 placeholder={APP_STEPS.OPERATION.CSV.VALUATION[language]}
-              >
-              </Form.Select>
+              />
+              <Form.Input
+                value={quote}
+                disabled={loading || transactionId !== ''}
+                onChange={(e, { value }) => setQuote(value)}
+                label={APP_STEPS.OPERATION.CSV.QUOTE[language]}
+                placeholder={APP_STEPS.OPERATION.CSV.QUOTE[language]}
+              />
               <Form.Field>
                 <Checkbox
                   checked={convertAfterImport}
@@ -196,14 +202,18 @@ function CsvImport ({ file, data, fileData }) {
               <Table.Body>
                 <Table.Row>
                   {fileData.map(data =>
-                    <Table.Cell key={data} disabled={transactionId !== ''}>
+                    <Table.Cell
+                      key={data}
+                      disabled={transactionId !== ''}
+                      style={{ paddingTop: '3rem', paddingBottom: '3rem' }}
+                    >
                       {data}
                     </Table.Cell>
                   )}
                 </Table.Row>
                 <Table.Row>
                   {data.structure.schema.columns.map((column, index) =>
-                    <Table.Cell key={`${column.name}Pseudo`}>
+                    <Table.Cell key={`${column.name}Pseudo`} style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
                       <Checkbox
                         toggle
                         disabled={loading || transactionId !== ''}
@@ -257,11 +267,11 @@ function CsvImport ({ file, data, fileData }) {
         </Grid.Row>
         }
         {checkJsonFirst && instructions !== '' &&
-          <Grid.Row>
-            <Grid.Column>
-              <CsvImportEdit file={file} instructions={instructions} />
-            </Grid.Column>
-          </Grid.Row>
+        <Grid.Row>
+          <Grid.Column>
+            <CsvImportEdit file={file} instructions={instructions} />
+          </Grid.Column>
+        </Grid.Row>
         }
       </Grid>
     </Segment>
