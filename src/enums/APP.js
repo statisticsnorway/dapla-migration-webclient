@@ -130,6 +130,10 @@ export const APP_STEPS = {
       EDIT_JSON: {
         en: 'Manually edit JSON before import?',
         nb: 'Manuelt editere JSON før import?'
+      },
+      QUOTE: {
+        en: 'Quote (for line breaks)',
+        nb: 'Quote (for linjeskift)'
       }
     },
     IMPORT: {

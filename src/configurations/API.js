@@ -114,9 +114,7 @@ export const API = {
 
     return commands
   },
-  LINES_TO_SHOW_OPTIONS: (length) => Array.from({ length: length }, (x, i) => {
-    const lines = i + 2
-
+  LINES_TO_SHOW_OPTIONS: () => [2, 5, 10, 100].map(lines => {
     return ({
       key: lines,
       text: lines,
@@ -193,32 +191,45 @@ export const API_INSTRUCTIONS = {
     },
     'state': {}
   }),
-  CSV_IMPORT: (id, files, delimiter, charset, columns, boundaryType, valuation, convertAfterImport, converterSkipOnFailure, pseudoRules) => ({
-    'id': id,
-    'command': {
-      'target': 'agent',
-      'cmd': 'csv-import',
-      'args': {
-        'template': {
-          'files': files,
-          'structure': {
-            'schema': {
-              'delimiter': delimiter,
-              'charset': charset,
-              'columns': columns
+  CSV_IMPORT: (id, files, delimiter, charset, columns, boundaryType, valuation, convertAfterImport, converterSkipOnFailure, pseudoRules, quote) => {
+    const json = {
+      'id': id,
+      'command': {
+        'target': 'agent',
+        'cmd': 'csv-import',
+        'args': {
+          'template': {
+            'files': files,
+            'structure': {
+              'schema': {
+                'delimiter': delimiter,
+                'charset': charset,
+                'columns': columns,
+                'quote': quote
+              },
+              'uri': 'inline:csv'
             },
-            'uri': 'inline:csv'
+            'metadata': {
+              'boundaryType': boundaryType,
+              'valuation': valuation
+            },
+            'pseudoRules': pseudoRules
           },
-          'metadata': {
-            'boundaryType': boundaryType,
-            'valuation': valuation
-          },
-          'pseudoRules': pseudoRules
-        },
-        'convertAfterImport': convertAfterImport,
-        'converterSkipOnFailure': converterSkipOnFailure
-      }
-    },
-    'state': {}
-  })
+          'convertAfterImport': convertAfterImport,
+          'converterSkipOnFailure': converterSkipOnFailure
+        }
+      },
+      'state': {}
+    }
+
+    if (quote === '') {
+      delete json.command.args.template.structure.schema.quote
+    }
+
+    if (pseudoRules.length === 0) {
+      delete json.command.args.template.pseudoRules
+    }
+
+    return json
+  }
 }
