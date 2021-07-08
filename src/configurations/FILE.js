@@ -31,6 +31,6 @@ export const FILE = {
     const filenameWithoutExtension = file.filename.split('.').slice(0, -1).join('.')
     const timestamp = `${td.getFullYear()}${('0' + (td.getMonth() + 1)).slice(-2)}${('0' + td.getDate()).slice(-2)}${td.getHours()}${td.getMinutes()}${td.getSeconds()}`
 
-    return ` ${bucket}${file.folder}/${filenameWithoutExtension}/${timestamp}/${file.filename}`
+    return ` ${bucket}${file.folder}/${filenameWithoutExtension}/${timestamp}/`
   }
 }

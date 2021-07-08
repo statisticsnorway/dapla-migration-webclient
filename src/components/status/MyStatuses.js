@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { Confirm, Grid, Icon, List } from 'semantic-ui-react'
+import { Confirm, Grid, Icon, List, Segment } from 'semantic-ui-react'
 
 import MigrationStatus from './MigrationStatus'
 import { LanguageContext } from '../../context/AppContext'
@@ -45,7 +45,7 @@ function MyStatuses ({ open }) {
   }, [check])
 
   return (
-    <>
+    <Segment basic>
       <Grid columns="equal">
         <Grid.Row>
           <Grid.Column>
@@ -81,7 +81,7 @@ function MyStatuses ({ open }) {
           setConfirmOpen(false)
         }}
       />
-    </>
+    </Segment>
   )
 }
 

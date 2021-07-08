@@ -15,6 +15,7 @@ export const API = {
   ERROR_PATH: ['data', 'state', 'errorCause'],
   READ_BYTES_PATH: ['data', 'result', 'status', 'read-bytes'],
   OPERATIONS: ['any-import', 'csv-import', 'json-import', 'archive-import'],
+  ARCHIVE_UNPACK: 'archive-unpack',
   ENCODE_OPTIONS: [
     {
       key: 'UTF-8',
@@ -77,6 +78,11 @@ export const API = {
     text: valuation,
     value: valuation
   })),
+  CONTENT_TYPE_OPTIONS: ['application/json', 'application/xml', 'text/csv', 'text/plain', 'text/xml'].map(type => ({
+    key: type,
+    text: type,
+    value: type
+  })),
   HANDLE_PUT: (env, data, url, token) => {
     if (env === 'development') {
       return ({
@@ -106,7 +112,7 @@ export const API = {
         break
 
       case 'zip':
-        commands.push(API.OPERATIONS[3])
+        commands.push(API.ARCHIVE_UNPACK)
         break
 
       default:
@@ -231,5 +237,35 @@ export const API_INSTRUCTIONS = {
     }
 
     return json
-  }
+  },
+  ARCHIVE_UNPACK: (id, file) => ({
+    'id': id,
+    'command': {
+      'target': 'agent',
+      'cmd': 'archive-unpack',
+      'args': {
+        'file': file
+      }
+    },
+    'state': {}
+  }),
+  ARCHIVE_IMPORT: (id, file, boundaryType, valuation, charset, contentType, addV1Manifest) => ({
+    'id': id,
+    'command': {
+      'target': 'agent',
+      'cmd': 'archive-import',
+      'args': {
+        'file': file,
+        'snapshot': 'latest',
+        'charset': charset,
+        'contentType': contentType,
+        'addV1Manifest': addV1Manifest,
+        'metadata': {
+          'boundaryType': boundaryType,
+          'valuation': valuation
+        }
+      }
+    },
+    'state': {}
+  })
 }

@@ -104,7 +104,7 @@ function CsvImport ({ file, data, fileData }) {
         pattern: `**/${column.name}`,
         func: `fpe-${
           [API.AVRO_TYPE_OPTIONS[1].value, API.AVRO_TYPE_OPTIONS[4].value].includes(column.type) ? 'digits' : 'anychar'
-        }(migrationsecret)`
+        }(migrationsecret1)`
       })
 
       if (existsInCurrent.length > 0) {
@@ -230,9 +230,9 @@ function CsvImport ({ file, data, fileData }) {
         <Grid.Row>
           <Grid.Column>
             <Checkbox
-              disabled={instructions !== ''}
               label={APP_STEPS.OPERATION.CSV.EDIT_JSON[language]}
               onChange={() => setCheckJsonFirst(!checkJsonFirst)}
+              disabled={loading || transactionId !== '' || instructions !== ''}
             />
           </Grid.Column>
           <Grid.Column textAlign="right">

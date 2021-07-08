@@ -1,4 +1,4 @@
-import { AnyImport, HeadOfFile } from '../files/operations'
+import { AnyImport, ArchiveImport, ArchiveUnpack, HeadOfFile } from '../files/operations'
 import { API } from '../../configurations'
 
 function AppForwardOperation ({ operation, file, trigger }) {
@@ -8,6 +8,12 @@ function AppForwardOperation ({ operation, file, trigger }) {
 
     case API.OPERATIONS[1]:
       return <HeadOfFile file={file} operation={operation.operation} />
+
+    case API.ARCHIVE_UNPACK:
+      return <ArchiveUnpack file={file} trigger={trigger} />
+
+    case API.OPERATIONS[3]:
+      return <ArchiveImport file={file} />
 
     default:
       return (
