@@ -51,7 +51,7 @@ function AppMagicMode () {
           {commands !== undefined &&
           <Button.Group width={commands.length} color="blue">
             {commands.map(command => {
-              if (!API.OPERATIONS.slice(0, 2).includes(command)) {
+              if (API.OPERATIONS[2] === command) {
                 return <Button key={command} disabled content={command} />
               } else {
                 return (

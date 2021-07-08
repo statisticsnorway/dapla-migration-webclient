@@ -64,8 +64,12 @@ function MigrationStatus ({ statusId, check, setCheck }) {
 
   return (
     <>
-      <Accordion styled={false}>
-        <Accordion.Title active={accordionOpen} onClick={() => setAccordionOpen(!accordionOpen)}>
+      <Accordion styled>
+        <Accordion.Title
+          active={accordionOpen}
+          onClick={() => setAccordionOpen(!accordionOpen)}
+          style={{ fontSize: '1.1rem', fontWeight: 'bold' }}
+        >
           <Icon name="dropdown" />
           {`${file} - ${info.command} `}
           {loading && <Icon color="blue" name="sync alternate" loading />}

@@ -161,6 +161,32 @@ export const APP_STEPS = {
         en: 'Check JSON',
         nb: 'Sjekk JSON'
       }
+    },
+    ARCHIVE: {
+      TRIGGER_UNPACK: {
+        en: 'Unpack',
+        nb: 'Pakk ut'
+      },
+      WAIT_FOR_UNPACK: {
+        en: 'You have to wait for the unpack process to complete, but status has been saved and can be tracked later if you leave.',
+        nb: 'Du må vente på utpakkingsprosessen, men statusen er lagret og kan alltid sjekkes senere hvis du avslutter.'
+      },
+      UNPACKING: {
+        en: 'Unpacking ...',
+        nb: 'Pakker ut ...'
+      },
+      UNPACK_COMPLETE: {
+        en: 'Unpack complete!',
+        nb: 'Utpakking ferdig!'
+      },
+      CONTENT_TYPE: {
+        en: 'contentType',
+        nb: 'contentType'
+      },
+      ADD_V1_MANIFEST: {
+        en: 'convertAddV1Manifest',
+        nb: 'convertAddV1Manifest'
+      }
     }
   },
   STATUS: {
