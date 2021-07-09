@@ -29,7 +29,7 @@ export const FILE = {
   createBucketString: (bucket, file, startTime) => {
     const td = new Date(startTime)
     const filenameWithoutExtension = file.filename.split('.').slice(0, -1).join('.')
-    const timestamp = `${td.getFullYear()}${('0' + (td.getMonth() + 1)).slice(-2)}${('0' + td.getDate()).slice(-2)}${td.getHours()}${td.getMinutes()}${td.getSeconds()}`
+    const timestamp = `${td.getUTCFullYear()}${('0' + (td.getUTCMonth() + 1)).slice(-2)}${('0' + td.getUTCDate()).slice(-2)}${td.getUTCHours()}${td.getUTCMinutes()}${td.getUTCSeconds()}`
 
     return ` ${bucket}${file.folder}/${filenameWithoutExtension}/${timestamp}/`
   }
