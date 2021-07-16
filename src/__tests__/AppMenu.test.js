@@ -12,12 +12,13 @@ window.localStorage.__proto__.getItem = jest.fn()
 window.localStorage.__proto__.setItem = jest.fn()
 
 const { language, otherLanguage } = TEST_CONFIGURATIONS
+const setSettingsOpen = jest.fn()
 
 const setup = () => {
   const { getByText, getByTestId } = render(
     <AppContextProvider>
       <MemoryRouter initialEntries={['/']}>
-        <AppMenu setSettingsOpen={jest.fn()} />
+        <AppMenu setSettingsOpen={setSettingsOpen} />
       </MemoryRouter>
     </AppContextProvider>
   )
@@ -43,8 +44,8 @@ test('Toggle advanced user mode', () => {
   const { getByTestId } = setup()
 
   userEvent.click(getByTestId(TEST_IDS.ADVANCED_USER_TOGGLE))
-
-  expect(getByTestId(TEST_IDS.SETTINGS_BUTTON)).toBeInTheDocument()
-
+  userEvent.click(getByTestId(TEST_IDS.SETTINGS_BUTTON))
   userEvent.click(getByTestId(TEST_IDS.ADVANCED_USER_TOGGLE))
+
+  expect(setSettingsOpen).toHaveBeenCalled()
 })

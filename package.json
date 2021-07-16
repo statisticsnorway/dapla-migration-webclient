@@ -8,7 +8,7 @@
   },
   "author": "Statistics Norway",
   "dependencies": {
-    "@statisticsnorway/dapla-js-utilities": "^0.2.9",
+    "@statisticsnorway/dapla-js-utilities": "^0.3.0",
     "ace-builds": "^1.4.12",
     "axios": "^0.21.1",
     "axios-hooks": "^2.6.3",
@@ -64,13 +64,8 @@
       "src/**",
       "!src/index.js",
       "!src/**/index.js",
-      "!src/configurations/**",
       "!src/enums/**",
-      "!src/__tests__/test-data/**",
-      "!src/components/files/**",
-      "!src/components/steps/**",
-      "!src/components/status/**",
-      "!src/components/magic/**"
+      "!src/__tests__/test-data/**"
     ],
     "coverageThreshold": {
       "global": {

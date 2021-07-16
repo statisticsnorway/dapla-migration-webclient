@@ -29,25 +29,26 @@ function CopyFileStatus ({ file, fileSize, transactionId, nextCommand, isComplet
 
       const checkStatus = async () => {
         await refetch().then(res => {
-          const startedDateTime = new Date(res.data.state.startTime)
+          const status = getNestedObject(res, API.STATUS_PATH)
+          const startedDateTime = new Date(getNestedObject(res, API.START_TIME_PATH))
 
           setReady(true)
-          setStarted(startedDateTime.toLocaleTimeString())
+          setStarted(`${startedDateTime.toLocaleDateString()} - ${startedDateTime.toLocaleTimeString()}`)
 
-          if (res.data.state.status === API.STATUS.COMPLETED) {
+          if (status === API.STATUS.COMPLETED) {
             setReadBytes(getNestedObject(res, API.READ_BYTES_PATH))
             clearInterval(interval)
           }
 
-          if (res.data.state.status === API.STATUS.IN_PROGRESS) {
+          if (status === API.STATUS.IN_PROGRESS) {
             setReadBytes(getNestedObject(res, API.READ_BYTES_PATH))
           }
 
-          if (res.data.state.status === API.STATUS.ERROR) {
+          if (status === API.STATUS.ERROR) {
             setStatusError(getNestedObject(res, API.ERROR_PATH))
             clearInterval(interval)
           }
-        })
+        }).catch(() => clearInterval(interval))
       }
 
       return () => clearInterval(interval)
