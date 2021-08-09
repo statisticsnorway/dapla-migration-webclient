@@ -26,17 +26,19 @@ function HeadOfFileStatus ({ file, transactionId, operation }) {
 
     const checkStatus = async () => {
       await refetch().then(res => {
-        if (res.data.state.status === API.STATUS.COMPLETED) {
+        const status = getNestedObject(res, API.STATUS_PATH)
+
+        if (status === API.STATUS.COMPLETED) {
           setData(res.data.result)
           clearInterval(interval)
         }
 
-        if (res.data.state.status === API.STATUS.ERROR) {
+        if (status === API.STATUS.ERROR) {
           setData(false)
           setStatusError(getNestedObject(res, API.ERROR_PATH))
           clearInterval(interval)
         }
-      })
+      }).catch(() => clearInterval(interval))
     }
 
     return () => clearInterval(interval)

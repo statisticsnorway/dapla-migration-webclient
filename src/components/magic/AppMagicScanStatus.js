@@ -22,11 +22,13 @@ function AppMagicScanStatus ({ transactionId, fullPath, command }) {
   useEffect(() => {
     const interval = setInterval(() => {
       checkStatus().then()
-    }, 2000)
+    }, 5000)
 
     const checkStatus = async () => {
       await refetch().then(res => {
-        if (res.data.state.status === API.STATUS.COMPLETED) {
+        const status = getNestedObject(res, API.STATUS_PATH)
+
+        if (status === API.STATUS.COMPLETED) {
           const file = fullPath.substr(fullPath.lastIndexOf('/') + 1, fullPath.length)
           const findFile = res.data.result.files.filter(element => element.filename === file)
 
@@ -35,16 +37,16 @@ function AppMagicScanStatus ({ transactionId, fullPath, command }) {
           clearInterval(interval)
         }
 
-        if (res.data.state.status === API.STATUS.IN_PROGRESS) {
+        if (status === API.STATUS.IN_PROGRESS) {
           setReady(false)
         }
 
-        if (res.data.state.status === API.STATUS.ERROR) {
+        if (status === API.STATUS.ERROR) {
           setStatusError(getNestedObject(res, API.ERROR_PATH))
           setReady(true)
           clearInterval(interval)
         }
-      })
+      }).catch(() => clearInterval(interval))
     }
 
     return () => clearInterval(interval)

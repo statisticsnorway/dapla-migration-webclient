@@ -25,17 +25,19 @@ function CsvDetermineImportStructureStatus ({ file, fileData, transactionId }) {
 
     const checkStatus = async () => {
       await refetch().then(res => {
-        if (res.data.state.status === API.STATUS.COMPLETED) {
+        const status = getNestedObject(res, API.STATUS_PATH)
+
+        if (status === API.STATUS.COMPLETED) {
           setReady(true)
           clearInterval(interval)
         }
 
-        if (res.data.state.status === API.STATUS.ERROR) {
+        if (status === API.STATUS.ERROR) {
           setReady(true)
           setStatusError(getNestedObject(res, API.ERROR_PATH))
           clearInterval(interval)
         }
-      })
+      }).catch(() => clearInterval(interval))
     }
 
     return () => clearInterval(interval)
@@ -53,7 +55,9 @@ function CsvDetermineImportStructureStatus ({ file, fileData, transactionId }) {
         style={{ marginBottom: '0.5rem' }}
       />
       }
-      {ready && !error && !statusError && <CsvImport file={file} data={data.result.template} fileData={fileData} />}
+      {ready && !loading && !error && !statusError &&
+      <CsvImport file={file} data={data.result.template} fileData={fileData} />
+      }
       {!loading && error && <ErrorMessage error={error} language={language} />}
       {!loading && statusError && <ErrorMessage error={statusError} language={language} />}
     </>

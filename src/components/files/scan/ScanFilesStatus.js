@@ -21,25 +21,27 @@ function ScanFilesStatus ({ transactionId }) {
   useEffect(() => {
     const interval = setInterval(() => {
       checkStatus().then()
-    }, 2000)
+    }, 5000)
 
     const checkStatus = async () => {
       await refetch().then(res => {
-        if (res.data.state.status === API.STATUS.COMPLETED) {
+        const status = getNestedObject(res, API.STATUS_PATH)
+
+        if (status === API.STATUS.COMPLETED) {
           setReady(true)
           clearInterval(interval)
         }
 
-        if (res.data.state.status === API.STATUS.IN_PROGRESS) {
+        if (status === API.STATUS.IN_PROGRESS) {
           setReady(false)
         }
 
-        if (res.data.state.status === API.STATUS.ERROR) {
+        if (status === API.STATUS.ERROR) {
           setStatusError(getNestedObject(res, API.ERROR_PATH))
           setReady(true)
           clearInterval(interval)
         }
-      })
+      }).catch(() => clearInterval(interval))
     }
 
     return () => clearInterval(interval)
@@ -54,7 +56,7 @@ function ScanFilesStatus ({ transactionId }) {
         {APP_STEPS.SCAN.SCANNING[language]}
       </>
       }
-      {ready && !error && !statusError &&
+      {ready && !error && !statusError && !loading &&
       <>
         <Icon style={{ marginRight: '1rem' }} size="large" color="green" name="check" />
         {APP_STEPS.SCAN.COMPLETE[language]}

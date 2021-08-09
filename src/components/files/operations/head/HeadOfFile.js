@@ -44,7 +44,7 @@ function HeadOfFile ({ file, operation }) {
           inline
           compact
           value={linesToShow}
-          options={API.LINES_TO_SHOW_OPTIONS(9)}
+          options={API.LINES_TO_SHOW_OPTIONS()}
           label={APP_STEPS.HEAD.LINES_TO_SHOW[language]}
           onChange={(e, { value }) => setLinesToShow(value)}
           placeholder={APP_STEPS.HEAD.LINES_TO_SHOW[language]}
