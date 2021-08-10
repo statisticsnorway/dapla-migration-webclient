@@ -31,6 +31,64 @@ export const TEST_CONFIGURATIONS = {
     file: '/test/a/path/file.txt',
     fileSize: 123
   },
+  testFileStatusCopy: {
+    command: {
+      args: {
+        path: '/test/a/path/file.txt'
+      },
+      cmd: 'copy',
+      target: 'sas-agent'
+    }
+  },
+  testFileStatusAnyImport: {
+    command: {
+      args: {
+        template: {
+          files: ['/test/a/path/file.txt']
+        }
+      },
+      cmd: 'any-import',
+      target: 'agent'
+    }
+  },
+  testFileStatusCsvImport: {
+    command: {
+      args: {
+        convertAfterImport: false,
+        converterSkipOnFailure: false,
+        template: {
+          files: ['/test/a/path/file.csv'],
+          metadata: {
+            boundaryType: 'BOUNDED',
+            valuation: 'INTERNAL'
+          },
+          structure: {
+            schema: {
+              delimiter: ';',
+              charset: 'UTF-8',
+              columns: [
+                {
+                  name: 'Some',
+                  type: 'Long'
+                },
+                {
+                  name: 'Cool',
+                  type: 'Long'
+                },
+                {
+                  name: 'Thing',
+                  type: 'String'
+                }
+              ]
+            },
+            uri: 'inline:csv'
+          }
+        }
+      },
+      cmd: 'csv-import',
+      target: 'agent'
+    }
+  },
   testFileDataEncoded: [
     'c29tZTtjb29sO3RoaW5n',
     'MTsyO3N0cmluZw=='
@@ -42,12 +100,23 @@ export const TEST_CONFIGURATIONS = {
       timestamp: '2011-10-05T15:48:00.000Z',
       status: API.STATUS.COMPLETED
     },
-    result: { status: { status: 'test-status' } }
+    result: {
+      files: [
+        {
+          size: 123,
+          filename: 'file.txt',
+          folder: '/test/a/path',
+          created: '2011-10-05T14:48:00.000Z',
+          modified: '2012-10-05T14:48:00.000Z'
+        }
+      ],
+      status: { status: 'test-status' }
+    },
   },
   csvTestFileCompletedData: {
     result: {
       template: {
-        files: ['/test/a/path/TestFile.csv'],
+        files: ['/test/a/path/file.csv'],
         metadata: {
           boundaryType: 'BOUNDED',
           valuation: 'INTERNAL'

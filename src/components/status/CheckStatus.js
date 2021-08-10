@@ -5,7 +5,7 @@ import { ErrorMessage, getNestedObject, InfoPopup } from '@statisticsnorway/dapl
 
 import { LanguageContext } from '../../context/AppContext'
 import { API, LOCAL_STORAGE } from '../../configurations'
-import { APP_STEPS } from '../../enums'
+import { APP_STEPS, TEST_IDS } from '../../enums'
 
 function CheckStatus () {
   const { language } = useContext(LanguageContext)
@@ -126,6 +126,7 @@ function CheckStatus () {
                   color={loading ? 'blue' : 'green'}
                   name={loading ? 'spinner' : 'plus'}
                   onClick={() => handleAddToMyStatuses()}
+                  data-testid={TEST_IDS.ADD_TO_MY_STATUSES}
                 />
               }
             />
