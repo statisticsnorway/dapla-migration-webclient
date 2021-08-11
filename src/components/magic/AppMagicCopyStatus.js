@@ -28,23 +28,25 @@ function AppMagicCopyStatus ({ fullPath, fileSize, transactionId, command }) {
 
     const checkStatus = async () => {
       await refetch().then(res => {
-        if (res.data.state.status === API.STATUS.COMPLETED) {
+        const status = getNestedObject(res, API.STATUS_PATH)
+
+        if (status === API.STATUS.COMPLETED) {
           setReady(true)
           setReadBytes(getNestedObject(res, API.READ_BYTES_PATH))
           clearInterval(interval)
         }
 
-        if (res.data.state.status === API.STATUS.IN_PROGRESS) {
+        if (status === API.STATUS.IN_PROGRESS) {
           setReady(true)
           setReadBytes(getNestedObject(res, API.READ_BYTES_PATH))
         }
 
-        if (res.data.state.status === API.STATUS.ERROR) {
+        if (status === API.STATUS.ERROR) {
           setReady(true)
           setStatusError(getNestedObject(res, API.ERROR_PATH))
           clearInterval(interval)
         }
-      })
+      }).catch(() => clearInterval(interval))
     }
 
     return () => clearInterval(interval)

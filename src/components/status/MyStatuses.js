@@ -3,7 +3,7 @@ import { Confirm, Grid, Icon, List, Segment } from 'semantic-ui-react'
 
 import MigrationStatus from './MigrationStatus'
 import { LanguageContext } from '../../context/AppContext'
-import { APP_STEPS } from '../../enums'
+import { APP_STEPS, TEST_IDS } from '../../enums'
 
 function MyStatuses ({ open }) {
   const { language } = useContext(LanguageContext)
@@ -61,7 +61,14 @@ function MyStatuses ({ open }) {
         <Grid.Row>
           <Grid.Column textAlign="right">
             {statuses.length !== 0 &&
-            <Icon link size="large" name="trash alternate outline" color="red" onClick={() => setConfirmOpen(true)} />
+            <Icon
+              link
+              color="red"
+              size="large"
+              name="trash alternate outline"
+              data-testid={TEST_IDS.REMOVE_MY_STATUSES}
+              onClick={() => setConfirmOpen(true)}
+            />
             }
           </Grid.Column>
         </Grid.Row>

@@ -28,33 +28,35 @@ function ArchiveImportStatus ({ file, transactionId, isCompleted = false, isComp
 
       const checkStatus = async () => {
         await refetch().then(res => {
-          if (res.data.state.status === API.STATUS.COMPLETED) {
+          const status = getNestedObject(res, API.STATUS_PATH)
+
+          if (status === API.STATUS.COMPLETED) {
             setReady(true)
             setState(null)
             setStatus(null)
             clearInterval(interval)
           }
 
-          if (res.data.state.status === API.STATUS.IN_PROGRESS) {
-            setState(res.data.state)
-            setStatus(res.data.result.status)
+          if (status === API.STATUS.IN_PROGRESS) {
+            setState(getNestedObject(res, API.STATE_PATH))
+            setStatus(getNestedObject(res, API.RESULT_STATUS_PATH))
           }
 
-          if (res.data.state.status === API.STATUS.ERROR) {
+          if (status === API.STATUS.ERROR) {
             setReady(true)
             setState(null)
             setStatus(null)
             setStatusError(getNestedObject(res, API.ERROR_PATH))
             clearInterval(interval)
           }
-        })
+        }).catch(() => clearInterval(interval))
       }
 
       return () => clearInterval(interval)
     } else {
       setReady(true)
-      setState(isCompleteData.state)
-      setStatus(isCompleteData.result.status)
+      setState(getNestedObject(isCompleteData, API.STATE_PATH.slice(1)))
+      setStatus(getNestedObject(isCompleteData, API.RESULT_STATUS_PATH.slice(1)))
     }
     // eslint-disable-next-line
   }, [])
@@ -63,7 +65,7 @@ function ArchiveImportStatus ({ file, transactionId, isCompleted = false, isComp
     <>
       <Progress
         progress
-        error={error || statusError}
+        error={!!(error || statusError)}
         success={ready && !error && !statusError}
         indicating={!ready && !error && !statusError}
         percent={ready ? error || statusError ? 0 : 100 : 0}
@@ -75,21 +77,40 @@ function ArchiveImportStatus ({ file, transactionId, isCompleted = false, isComp
       {!ready && status !== null && <p>{JSON.stringify(status, null, 2)}</p>}
       {ready && !loading && !error &&
       <>
-        {`Start time: ${isCompleted ? isCompleteData.state.startTime : data.state.startTime}`}
+        {`Start time: ${isCompleted ?
+          getNestedObject(isCompleteData, API.START_TIME_PATH.slice(1))
+          :
+          getNestedObject(data, API.START_TIME_PATH.slice(1))
+        }`}
         <br />
-        {`Completed: ${isCompleted ? isCompleteData.state.timestamp : data.state.timestamp}`}
+        {`Completed: ${isCompleted ?
+          getNestedObject(isCompleteData, API.TIMESTAMP_PATH.slice(1))
+          :
+          getNestedObject(data, API.TIMESTAMP_PATH.slice(1))
+        }`}
         <br />
-        {`Status: ${isCompleted ? isCompleteData.state.status : data.state.status} `}
+        {`Status: ${isCompleted ?
+          getNestedObject(isCompleteData, API.STATUS_PATH.slice(1))
+          :
+          getNestedObject(data, API.STATUS_PATH.slice(1))
+        } `}
         <Icon color="green" name="check" />
         <Divider hidden />
-        {JSON.stringify(isCompleted ? isCompleteData.result.status : data.result.status, null, 2)}
+        {JSON.stringify(isCompleted ?
+          getNestedObject(isCompleteData, API.RESULT_STATUS_PATH.slice(1))
+          :
+          getNestedObject(data, API.RESULT_STATUS_PATH.slice(1)),
+          null, 2)}
         <Divider hidden />
         {APP_STEPS.OPERATION.IMPORT.FOUND_IN_BUCKET[language]}
         <b>
           {FILE.createBucketString(
             'gs://ssb-rawdata-prod-migration/kilde/migration',
             file,
-            isCompleted ? isCompleteData.state.startTime : data.state.startTime
+            isCompleted ?
+              getNestedObject(isCompleteData, API.TIMESTAMP_PATH.slice(1))
+              :
+              getNestedObject(data, API.TIMESTAMP_PATH.slice(1))
           )}
         </b>
       </>

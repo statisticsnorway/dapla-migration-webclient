@@ -27,17 +27,19 @@ function ArchiveUnpackStatus ({ file, transactionId, isCompleted = false }) {
 
       const checkStatus = async () => {
         await refetch().then(res => {
-          if (res.data.state.status === API.STATUS.COMPLETED) {
+          const status = getNestedObject(res, API.STATUS_PATH)
+
+          if (status === API.STATUS.COMPLETED) {
             setReady(true)
             clearInterval(interval)
           }
 
-          if (res.data.state.status === API.STATUS.ERROR) {
+          if (status === API.STATUS.ERROR) {
             setReady(true)
             setStatusError(getNestedObject(res, API.ERROR_PATH))
             clearInterval(interval)
           }
-        })
+        }).catch(() => clearInterval(interval))
       }
 
       return () => clearInterval(interval)
@@ -52,7 +54,7 @@ function ArchiveUnpackStatus ({ file, transactionId, isCompleted = false }) {
       <Progress
         total={1}
         progress="ratio"
-        error={error || statusError}
+        error={!!(error || statusError)}
         success={ready && !error && !statusError}
         indicating={!ready && !error && !statusError}
         value={ready ? error || statusError ? 0 : 1 : 0}

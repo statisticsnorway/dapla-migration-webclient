@@ -28,26 +28,28 @@ function CsvImportStatus ({ file, transactionId, convertAfterImport, isCompleted
 
       const checkStatus = async () => {
         await refetch().then(res => {
-          if (res.data.state.status === API.STATUS.COMPLETED) {
+          const status = getNestedObject(res, API.STATUS_PATH)
+
+          if (status === API.STATUS.COMPLETED) {
             setReady(true)
             setState(null)
             setStatus(null)
             clearInterval(interval)
           }
 
-          if (res.data.state.status === API.STATUS.IN_PROGRESS) {
+          if (status === API.STATUS.IN_PROGRESS) {
             setState(res.data.state)
             setStatus(res.data.result.status)
           }
 
-          if (res.data.state.status === API.STATUS.ERROR) {
+          if (status === API.STATUS.ERROR) {
             setReady(true)
             setState(null)
             setStatus(null)
             setStatusError(getNestedObject(res, API.ERROR_PATH))
             clearInterval(interval)
           }
-        })
+        }).catch(() => clearInterval(interval))
       }
 
       return () => clearInterval(interval)
@@ -63,7 +65,7 @@ function CsvImportStatus ({ file, transactionId, convertAfterImport, isCompleted
     <>
       <Progress
         progress
-        error={error || statusError}
+        error={!!(error || statusError)}
         success={ready && !error && !statusError}
         indicating={!ready && !error && !statusError}
         percent={ready ? error || statusError ? 0 : 100 : 0}

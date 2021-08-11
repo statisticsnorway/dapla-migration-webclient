@@ -6,7 +6,7 @@ import { ErrorMessage, InfoPopup } from '@statisticsnorway/dapla-js-utilities'
 import SelectFile from './SelectFile'
 import { LanguageContext } from '../../../context/AppContext'
 import { API } from '../../../configurations'
-import { APP_STEPS } from '../../../enums'
+import { APP_STEPS, TEST_IDS } from '../../../enums'
 
 function ListFiles ({ agent, scanPath, initWithFile }) {
   const { language } = useContext(LanguageContext)
@@ -61,6 +61,7 @@ function ListFiles ({ agent, scanPath, initWithFile }) {
                 size="large"
                 color="blue"
                 name="paste"
+                data-testid={TEST_IDS.PASTE_PATH_TRIGGER}
                 onClick={() => {
                   setPath(scanPath)
                   executeGet({ url: `${window.__ENV.REACT_APP_API}/${agent}${API.FOLDER}${scanPath}` })

@@ -11,9 +11,9 @@ window.localStorage.__proto__.getItem = jest.fn()
 window.localStorage.__proto__.setItem = jest.fn()
 
 const { alternativeApi, errorString, language } = TEST_CONFIGURATIONS
+const execute = jest.fn()
 const setDevToken = jest.fn()
 const apiContext = TEST_CONFIGURATIONS.apiContext(jest.fn(), jest.fn(), setDevToken)
-const execute = jest.fn()
 
 const setup = () => {
   const { getByPlaceholderText, getByTestId, getByText } = render(
@@ -76,6 +76,12 @@ describe('Common mock', () => {
     await userEvent.type(getByPlaceholderText('Just paste token and close settings'), 'devToken')
 
     expect(setDevToken).toHaveBeenCalled()
+  })
+
+  test('Toggles modal', () => {
+    setup()
+
+    userEvent.keyboard('{esc}')
   })
 })
 
