@@ -37,14 +37,14 @@ test('Fires put request correctly and no copy', () => {
 test('Fires put request correctly and copy', () => {
   useAxios.mockReturnValue([{
     data: {
-      files: testFileObjects.map(testFile => {
-        if (testFile.filename === 'file.txt') {
-          testFile.filename = 'file3.txt'
+      files: testFileObjects.map(element => {
+        if (element.filename === 'file.txt') {
+          element.filename = 'file3.txt'
         } else {
-          testFile.filename = 'file4.txt'
+          element.filename = 'file4.txt'
         }
 
-        return testFile
+        return element
       })
     }, error: undefined, loading: false
   }, executeGet])

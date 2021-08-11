@@ -1,10 +1,9 @@
 export const FILE = {
   createFileDetails: file => {
-    let details = {}
+    const details = {}
 
-    //const fileSizeKB = file.size * 0.0009765625
     const fileSizeKB = file.size * 0.001
-    let fileSize = fileSizeKB
+    const fileSize = fileSizeKB
 
     details.created = new Date(file.created)
     details.modified = new Date(file.modified)
@@ -15,7 +14,6 @@ export const FILE = {
       details.unit = 'B'
     } else {
       if (fileSizeKB.toFixed(0).toString().length >= 5) {
-        //details.size = file.size * 0.00000095367432
         details.size = file.size * 0.000001
         details.unit = 'MB'
       } else {

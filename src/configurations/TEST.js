@@ -64,8 +64,8 @@ export const TEST_CONFIGURATIONS = {
     file: fullPath,
     fileSize: 123
   },
-  testFileStatus: (file, command) => ({
-    file: file,
+  testFileStatus: (filePath, command) => ({
+    file: filePath,
     command: command
   }),
   testFileStatusCopy: {
