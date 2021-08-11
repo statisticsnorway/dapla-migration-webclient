@@ -27,9 +27,9 @@ function CsvHeadOfFileContent ({ file, data }) {
       const decoder = new TextDecoder(charset)
       const encoded = data.data.map(line => encoder.encode(atob(line)))
       const string = encoded.map(line => decoder.decode(line)).join('\n')
-      const fileData = decoder.decode(encoded.slice(-1)[0]).split(delimiter)
+      const fileDataDecoded = decoder.decode(encoded.slice(-1)[0]).split(delimiter)
 
-      setFileData(fileData)
+      setFileData(fileDataDecoded)
       setStringValue(string)
     }
   }, [charset, data, delimiter])

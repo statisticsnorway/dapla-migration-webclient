@@ -9,10 +9,10 @@ function SelectFileOperation ({ file }) {
   const [commands, setCommands] = useState(API.ASSIGN_COMMANDS(fileExtension))
 
   useEffect(() => {
-    const fileExtension = file.filename.split('.').pop()
+    const extractedFileExtension = file.filename.split('.').pop()
 
-    setFileExtension(fileExtension)
-    setCommands(API.ASSIGN_COMMANDS(fileExtension))
+    setFileExtension(extractedFileExtension)
+    setCommands(API.ASSIGN_COMMANDS(extractedFileExtension))
   }, [file])
 
   return (

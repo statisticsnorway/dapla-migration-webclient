@@ -74,7 +74,7 @@ describe('Use fake timers', () => {
 test('Renders correctly on error', () => {
   useAxios.mockReturnValue([{ error: errorString, loading: false }, refetch])
 
-  const { getByText } = setup(false)
+  const { getByText } = setup()
 
   expect(getByText(errorString)).toBeInTheDocument()
 })

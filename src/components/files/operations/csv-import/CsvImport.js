@@ -201,13 +201,13 @@ function CsvImport ({ file, data, fileData }) {
               </Table.Header>
               <Table.Body>
                 <Table.Row>
-                  {fileData.map(data =>
+                  {fileData.map(dataElement =>
                     <Table.Cell
-                      key={data}
+                      key={dataElement}
                       disabled={transactionId !== ''}
                       style={{ paddingTop: '3rem', paddingBottom: '3rem' }}
                     >
-                      {data}
+                      {dataElement}
                     </Table.Cell>
                   )}
                 </Table.Row>

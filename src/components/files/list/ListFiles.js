@@ -20,10 +20,10 @@ function ListFiles ({ agent, scanPath, initWithFile }) {
     if (initWithFile) {
       const pathArray = initWithFile.split('/')
       pathArray.splice(pathArray.length - 1, 1)
-      const path = pathArray.join('/')
+      const pathString = pathArray.join('/')
 
-      setPath(path)
-      executeGet({ url: `${window.__ENV.REACT_APP_API}/${agent}${API.FOLDER}${path}` })
+      setPath(pathString)
+      executeGet({ url: `${window.__ENV.REACT_APP_API}/${agent}${API.FOLDER}${pathString}` })
       setReady(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

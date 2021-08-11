@@ -1,5 +1,7 @@
 # dapla-migration-webclient
 
+[![Build Status](https://dev.azure.com/statisticsnorway/Dapla/_apis/build/status/statisticsnorway.dapla-migration-webclient?repoName=statisticsnorway%2Fdapla-migration-webclient&branchName=master)](https://dev.azure.com/statisticsnorway/Dapla/_build/latest?definitionId=221&repoName=statisticsnorway%2Fdapla-migration-webclient&branchName=master)
+
 This application is built for in-house use in Statistics Norway and it aims to create a user interface on top of the
 [dapla-migration-project](https://github.com/statisticsnorway/dapla-migration-project) using the REST API from
 [dapla-migration-coordinator](https://github.com/statisticsnorway/dapla-migration-coordinator).
