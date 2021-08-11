@@ -6,7 +6,7 @@ import { ErrorMessage } from '@statisticsnorway/dapla-js-utilities'
 import MigrationStatusForward from './MigrationStatusForward'
 import { LanguageContext } from '../../context/AppContext'
 import { API } from '../../configurations'
-import { APP_STEPS } from '../../enums'
+import { APP_STEPS, TEST_IDS } from '../../enums'
 
 function MigrationStatus ({ statusId, check, setCheck }) {
   const { language } = useContext(LanguageContext)
@@ -84,7 +84,13 @@ function MigrationStatus ({ statusId, check, setCheck }) {
         </Accordion.Title>
         <Accordion.Content active={accordionOpen}>
           <Segment basic>
-            <Label size="large" as="a" attached="bottom right" onClick={() => setConfirmOpen(true)}>
+            <Label
+              as="a"
+              size="large"
+              attached="bottom right"
+              onClick={() => setConfirmOpen(true)}
+              data-testid={TEST_IDS.REMOVE_FROM_MY_STATUSES}
+            >
               <Icon fitted name="trash alternate outline" color="red" />
             </Label>
             {!loading && error && <ErrorMessage error={error} language={language} />}

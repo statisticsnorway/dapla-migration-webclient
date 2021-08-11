@@ -1,6 +1,39 @@
 import { LANGUAGE } from '@statisticsnorway/dapla-js-utilities'
 import { API } from './API'
 
+const file = 'file.txt'
+const folder = '/test/a/path'
+const fullPath = `${folder}/${file}`
+const timestamp = '2011-10-05T14:48:00.000Z'
+const template = {
+  files: [`${folder}/file.csv`],
+  metadata: {
+    boundaryType: 'BOUNDED',
+    valuation: 'INTERNAL'
+  },
+  structure: {
+    schema: {
+      delimiter: ';',
+      charset: 'UTF-8',
+      columns: [
+        {
+          name: 'Some',
+          type: 'Long'
+        },
+        {
+          name: 'Cool',
+          type: 'Long'
+        },
+        {
+          name: 'Thing',
+          type: 'String'
+        }
+      ]
+    },
+    uri: 'inline:csv'
+  }
+}
+
 export const TEST_CONFIGURATIONS = {
   alternativeApi: 'http://localhost:9999',
   apiContext: (fn, fn2, fn3, advancedUser = false) => ({
@@ -14,27 +47,31 @@ export const TEST_CONFIGURATIONS = {
   testFileObjects: [
     {
       size: 123,
-      filename: 'file.txt',
-      folder: '/test/a/path',
-      created: '2011-10-05T14:48:00.000Z',
+      filename: file,
+      folder: folder,
+      created: timestamp,
       modified: '2012-10-05T14:48:00.000Z'
     },
     {
       size: 456,
       filename: 'file2.txt',
       folder: '/test/b/path',
-      created: '2013-10-05T14:48:00.000Z',
+      created: timestamp,
       modified: '2014-10-05T14:48:00.000Z'
     }
   ],
   testFile: {
-    file: '/test/a/path/file.txt',
+    file: fullPath,
     fileSize: 123
   },
+  testFileStatus: (file, command) => ({
+    file: file,
+    command: command
+  }),
   testFileStatusCopy: {
     command: {
       args: {
-        path: '/test/a/path/file.txt'
+        path: fullPath
       },
       cmd: 'copy',
       target: 'sas-agent'
@@ -44,7 +81,7 @@ export const TEST_CONFIGURATIONS = {
     command: {
       args: {
         template: {
-          files: ['/test/a/path/file.txt']
+          files: [fullPath]
         }
       },
       cmd: 'any-import',
@@ -56,47 +93,16 @@ export const TEST_CONFIGURATIONS = {
       args: {
         convertAfterImport: false,
         converterSkipOnFailure: false,
-        template: {
-          files: ['/test/a/path/file.csv'],
-          metadata: {
-            boundaryType: 'BOUNDED',
-            valuation: 'INTERNAL'
-          },
-          structure: {
-            schema: {
-              delimiter: ';',
-              charset: 'UTF-8',
-              columns: [
-                {
-                  name: 'Some',
-                  type: 'Long'
-                },
-                {
-                  name: 'Cool',
-                  type: 'Long'
-                },
-                {
-                  name: 'Thing',
-                  type: 'String'
-                }
-              ]
-            },
-            uri: 'inline:csv'
-          }
-        }
+        template: template
       },
       cmd: 'csv-import',
       target: 'agent'
     }
   },
-  testFileDataEncoded: [
-    'c29tZTtjb29sO3RoaW5n',
-    'MTsyO3N0cmluZw=='
-  ],
   testFileDataDecoded: ['1;2;string'],
   testFileIsCompletedData: {
     state: {
-      startTime: '2011-10-05T14:48:00.000Z',
+      startTime: timestamp,
       timestamp: '2011-10-05T15:48:00.000Z',
       status: API.STATUS.COMPLETED
     },
@@ -104,59 +110,32 @@ export const TEST_CONFIGURATIONS = {
       files: [
         {
           size: 123,
-          filename: 'file.txt',
-          folder: '/test/a/path',
-          created: '2011-10-05T14:48:00.000Z',
-          modified: '2012-10-05T14:48:00.000Z'
+          filename: file,
+          folder: folder,
+          created: timestamp,
+          modified: timestamp
         }
       ],
       status: { status: 'test-status' }
-    },
+    }
   },
   csvTestFileCompletedData: {
     result: {
-      template: {
-        files: ['/test/a/path/file.csv'],
-        metadata: {
-          boundaryType: 'BOUNDED',
-          valuation: 'INTERNAL'
-        },
-        structure: {
-          schema: {
-            delimiter: ';',
-            charset: 'UTF-8',
-            columns: [
-              {
-                name: 'Some',
-                type: 'Long'
-              },
-              {
-                name: 'Cool',
-                type: 'Long'
-              },
-              {
-                name: 'Thing',
-                type: 'String'
-              }
-            ]
-          },
-          uri: 'inline:csv'
-        }
-      }
+      template: template
     }
   },
   testMockResolve: (status, resultStatus, error = false) => {
     if (error) {
       return ({
         data: {
-          state: { startTime: '2011-10-05T14:48:00.000Z', status: API.STATUS.ERROR, errorCause: error },
+          state: { startTime: timestamp, status: API.STATUS.ERROR, errorCause: error },
           result: { status: { status: 'test-status' } }
         }
       })
     } else {
       return ({
         data: {
-          state: { startTime: '2011-10-05T14:48:00.000Z', status: status },
+          state: { startTime: timestamp, status: status },
           result: { status: resultStatus }
         }
       })
