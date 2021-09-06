@@ -1,6 +1,6 @@
 {
   "name": "dapla-migration-webclient",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A webclient on top of dapla-migration-project",
   "repository": {
     "type": "git",
