@@ -25,4 +25,4 @@ Run `yarn start` and navigate to `http://localhost:3000`.
 
 **Note** that this application
 requires [dapla-migration-project](https://github.com/statisticsnorway/dapla-migration-project)
-running to function locally.
+running locally to have any meaningful functionality.

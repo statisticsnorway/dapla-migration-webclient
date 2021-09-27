@@ -15,17 +15,19 @@ resources:
     - repository: templates
       type: github
       name: statisticsnorway/azure-pipelines-templates
+      ref: refs/heads/sonarQube-to-sonarCloud
       endpoint: statisticsnorway (6)
 
 pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  - group: Hemmeligheter
   - name: 'appName'
     value: 'dapla-migration-webclient'
   - name: 'imageTag'
     value: '$(Build.SourceBranchName)-$(Build.SourceVersion)'
+  - name: 'sonarCloud'
+    value: 'bipSonarCloud-Dapla'
 
 jobs:
   - template: javascript/react-complete-build.yml@templates
