@@ -34,3 +34,4 @@ jobs:
     parameters:
       appName: $(appName)
       imageTag: $(imageTag)
+      sonarCloud: $(sonarCloud)
