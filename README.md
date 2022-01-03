@@ -1,6 +1,8 @@
 # dapla-migration-webclient
 
 [![Build Status](https://dev.azure.com/statisticsnorway/Dapla/_apis/build/status/statisticsnorway.dapla-migration-webclient?repoName=statisticsnorway%2Fdapla-migration-webclient&branchName=master)](https://dev.azure.com/statisticsnorway/Dapla/_build/latest?definitionId=221&repoName=statisticsnorway%2Fdapla-migration-webclient&branchName=master)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=statisticsnorway_dapla-migration-webclient&metric=coverage)](https://sonarcloud.io/summary/new_code?id=statisticsnorway_dapla-migration-webclient)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=statisticsnorway_dapla-migration-webclient&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=statisticsnorway_dapla-migration-webclient)
 
 This application is built for in-house use in Statistics Norway and it aims to create a user interface on top of the
 [dapla-migration-project](https://github.com/statisticsnorway/dapla-migration-project) using the REST API from
